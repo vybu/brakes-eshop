@@ -71,7 +71,10 @@ const description =
   `LAVA competition brake pads — state-of-the-art friction chemistry and in-house R&D at the ` +
   `friction class of Pagid, Brembo and Ferodo, for a fraction of the price. Five compounds from ` +
   `fast road to endurance, configured to your exact caliper. From ${FROM_PRICE} € per set.`;
-const ogImage = `${SITE}/apex/hero-pad.png`;
+// Purpose-built 1200×630 opaque social card (dark, wordmark + pad + tagline).
+// Absolute URL resolves against `site` — correct once the launch domain is live.
+const ogImage = `${SITE}/og-image.png`;
+const ogImageAlt = "LAVA competition brake pads — track focused, street priced";
 
 // Product JSON-LD, priced from the real catalog: one Product per compound with an
 // AggregateOffer spanning the cheapest→dearest caliper fitment. No AggregateRating —
@@ -128,10 +131,16 @@ const jsonLd = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+    <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="LAVA — Track focused, street priced competition brake pads" />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
