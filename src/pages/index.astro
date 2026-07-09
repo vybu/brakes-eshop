@@ -1,10 +1,10 @@
 ---
 // LAVA — "Apex" landing/shop, modelled on vitourmotorsport.eu's structure but on
 // the LAVA brand: Montserrat throughout, warm near-black panels over a warm light
-// page, and molten-orange (#E5451D) accent used with RESTRAINT — reserved for the
+// page, and racing-red (#C1001F) accent used with RESTRAINT — reserved for the
 // primary CTAs, the hero wedge, the LAVA price bar, and the tab underline; every
 // other surface (nav, cards, badges, eyebrows, avatars) stays neutral. A two-tone
-// uppercase hero over a grid + orange diagonal wedge with a floating product, a
+// uppercase hero over a grid + red diagonal wedge with a floating product, a
 // product-image compound carousel, feature tabs, a light proof + testimonial block,
 // and a dark newsletter-style CTA panel over a track image.
 // LAVA-unique: the thermal gradient survives ONLY on the temperature scales.
@@ -43,22 +43,23 @@ const CARD: Record<string, { tier: string; img: string; isNew?: boolean }> = {
 };
 
 const compare = [
-  { fit: "Impreza STI / Civic FK8", part: "LP-101", lava: 600, rival: 1169, brand: "Ferodo DS2500" },
-  { fit: "Nissan GTR · Brembo", part: "LP-106", lava: 800, rival: 1333, brand: "Ferodo DS1.11" },
-  { fit: "Audi RS3 / RS5", part: "LP-103", lava: 700, rival: 1662, brand: "Ferodo DS2500" },
-  { fit: "BMW M2 · Front", part: "LP-112", lava: 700, rival: 1290, brand: "EBC Bluestuff" },
+  { fit: "Impreza STI / Civic FK8", part: "LP-101", lava: 140, rival: 270, brand: "Ferodo DS2500" },
+  { fit: "Nissan GTR · Brembo", part: "LP-106", lava: 185, rival: 405, brand: "Pagid RSL29" },
+  { fit: "Audi RS3 / RS5", part: "LP-103", lava: 165, rival: 375, brand: "Brembo Sport" },
+  { fit: "BMW M2 · Front", part: "LP-112", lava: 165, rival: 300, brand: "EBC Bluestuff" },
+  { fit: "Porsche 992 GT3", part: "LP-118", lava: 210, rival: 505, brand: "Pagid RS29" },
 ];
 
 const features = [
   { key: "fit", tab: "Exact fit", head: "Modelled to your caliper, not filed to it", body: "Every backing plate is drawn to the caliper it serves — drop-in, no shims, no rattle, no rework in the pit lane.", img: "/gen2/caliper.jpg" },
   { key: "heat", tab: "Thermal range", head: "One calibrated scale, street to endurance", body: "Five compounds spanning 20–850 °C. Each is defined by the window it holds — read the bracket, not the marketing.", img: "/gen2/disc-topdown.jpg" },
   { key: "wear", tab: "Proven wear", head: "TWe marks the disc by 0.001 mm a session", body: "Our endurance compound records the lowest wear in the range and is kind to the disc it rides — measured, not claimed.", img: "/gen2/compound-macro.jpg" },
-  { key: "value", tab: "Honest value", head: "Same friction class, half the invoice", body: "Every compound is placed against a named Ferodo or EBC tier, then priced at roughly half. The comparison is the spec.", img: "/gen2/pad-detail.jpg" },
+  { key: "value", tab: "Honest value", head: "Same friction class, a fraction of the invoice", body: "Every compound is placed against a named tier — Ferodo and EBC through to Pagid and Brembo racing pads — then priced at a fraction. The comparison is the spec.", img: "/gen2/pad-detail.jpg" },
 ];
 
 const testimonials = [
   { q: "Confident from cold on the road, then holds every braking zone once the disc is up to temperature. First set that did both.", who: "M. Kowalski", role: "Time-attack · Civic FK8" },
-  { q: "Swapped a set that cost twice as much. Same bite, no fade over a 20-minute session. I'm not paying Ferodo money again.", who: "T. Nowak", role: "Track-day · BMW M2" },
+  { q: "Swapped off a set of Pagid RS29 that cost more than twice as much. Same bite, no fade over a 20-minute session. I'm not paying Pagid money again.", who: "T. Nowak", role: "Track-day · BMW M2" },
   { q: "Drop-in fit, no filing, no shims. Pit stop was a 90-second pad change. Exactly what the spec sheet promised.", who: "A. Lewandowska", role: "Endurance · Porsche Cup" },
 ];
 ---
@@ -100,7 +101,7 @@ const testimonials = [
             <h1>Track focused<br /><span class="dim">street priced</span></h1>
             <p class="lede">
               LAVA competition pads are engineered for track-day, time-attack, and spirited road
-              driving — the friction class of Ferodo and EBC, sold for roughly half.
+              driving — the friction class of Pagid, Brembo and Ferodo, sold for a fraction.
             </p>
             <a href="#configure" class="btn btn-primary btn-lg">Configure your set</a>
           </div>
@@ -169,24 +170,13 @@ const testimonials = [
         </div>
       </section>
 
-      <!-- CONFIGURATOR — this is the shop -->
-      <section id="configure" class="dsection configure">
-        <div class="cfg-copy">
-          <span class="eyebrow">Build &amp; buy</span>
-          <h2>Configure your set.</h2>
-          <p class="dsub">No SKU matrix to search. Pick a compound, pick your caliper — the price you see is the set that ships.</p>
+      <!-- PROOF — value bars, themed for the dark panel it now lives in -->
+      <section id="proof" class="dsection proof">
+        <div class="dsection-head col">
+          <span class="eyebrow">Value, measured</span>
+          <h2>Same friction class. A fraction of the invoice.</h2>
+          <p class="dsub">Price per set in euro, LAVA against the named brand in the same friction tier — from Ferodo and EBC to Pagid and Brembo racing pads. The saving is the number, not the pitch.</p>
         </div>
-        <ConfiguratorStudio client:load heading="Configure your LAVA set" compoundImages={APEX_COMPOUND_IMAGES} catalog={catalog} />
-      </section>
-    </div>
-
-    <!-- LIGHT BLOCK -->
-    <section id="proof" class="lsection proof">
-      <div class="lsection-head">
-        <span class="eyebrow light">Value, measured</span>
-        <h2>Same friction class. Half the invoice.</h2>
-        <p class="lsub">Price per set in euro, LAVA against the established brand in the same friction tier. The saving is the number, not the pitch.</p>
-      </div>
       <div class="bars">
         {compare.map((r) => {
           const savePct = Math.round((1 - r.lava / r.rival) * 100);
@@ -212,6 +202,18 @@ const testimonials = [
           );
         })}
       </div>
+    </section>
+    </div>
+
+    <!-- LIGHT BLOCK -->
+    <!-- CONFIGURATOR — the shop; picker re-themed light for its light-section home -->
+    <section id="configure" class="lsection configure">
+      <div class="cfg-copy">
+        <span class="eyebrow light">Build &amp; buy</span>
+        <h2>Configure your set.</h2>
+        <p class="lsub">No SKU matrix to search. Pick a compound, pick your caliper — the price you see is the set that ships.</p>
+      </div>
+      <ConfiguratorStudio client:load heading="Configure your LAVA set" catalog={catalog} />
     </section>
 
     <section class="lsection testi">
@@ -284,8 +286,8 @@ const testimonials = [
         --dark:#100E0B; --dark-2:#17130E; --dark-3:#1F1A13;
         --line-d:rgba(245,237,224,.10); --line-d-2:rgba(245,237,224,.18); --line-l:#D8D2C8;
         --white:#F4EDE0; --white-dim:rgba(244,237,224,.72); --white-faint:rgba(244,237,224,.5);
-        /* Brand accent — molten orange, used with restraint (CTAs, hero wedge, LAVA bar). */
-        --accent:#E5451D; --accent-hi:#F1521F; --accent-ink:#fff;
+        /* Brand accent — racing red, used with restraint (CTAs, hero wedge, LAVA bar). */
+        --accent:#C1001F; --accent-hi:#E11437; --accent-ink:#fff;
         --thermal:linear-gradient(90deg,#E33D1B 0%,#E9682A 34%,#F1A361 66%,#FCEDCC 100%);
         --font:"Montserrat",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
         --gutter:clamp(20px,5vw,64px); --section-y:clamp(64px,8vw,120px); --max:1280px;
@@ -337,7 +339,10 @@ const testimonials = [
       .nav{ position:relative; z-index:5; }
       .nav-inner{ max-width:var(--max); margin:0 auto; padding:22px var(--gutter);
         display:flex; align-items:center; gap:18px; }
-      .nav-logo img{ height:20px; filter:brightness(0) invert(1); }
+      .nav-logo img{ height:20px; filter:brightness(0) invert(1);
+        transition:filter .55s var(--ease); }
+      .nav-logo:hover img, .nav-logo:focus-visible img{ filter:none; }
+      @media (prefers-reduced-motion: reduce){ .nav-logo img{ transition:none; } }
       .nav-badge{ font-size:.7rem; letter-spacing:.06em; color:var(--white-dim);
         border:1px solid var(--line-d-2); border-radius:var(--r-chip); padding:6px 14px; }
       .nav-links{ display:flex; align-items:center; gap:30px; margin-left:auto; }
@@ -364,7 +369,7 @@ const testimonials = [
         -webkit-mask-image:radial-gradient(120% 100% at 15% 10%, #000 25%, transparent 70%);
         mask-image:radial-gradient(120% 100% at 15% 10%, #000 25%, transparent 70%); }
       .hero-wedge{ position:absolute; z-index:0; top:-10%; bottom:-10%; right:-6%; width:64%;
-        background:linear-gradient(115deg, transparent 30%, rgba(229,69,29,.22) 68%, rgba(229,69,29,.04) 92%);
+        background:linear-gradient(115deg, transparent 30%, rgba(193,0,31,.22) 68%, rgba(193,0,31,.04) 92%);
         clip-path:polygon(26% 0,100% 0,100% 100%,2% 100%); filter:blur(4px); }
       .hero-inner{ position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr;
         gap:clamp(24px,4vw,48px); align-items:center; min-height:clamp(380px,46vw,540px); }
@@ -431,11 +436,17 @@ const testimonials = [
       .cfg-copy{ max-width:64ch; margin-bottom:clamp(28px,3.5vw,44px); }
       .cfg-copy .eyebrow{ margin-bottom:16px; }
       .cfg-copy h2{ margin-bottom:0; }
-      .cfg-copy .dsub{ margin-top:14px; }
-      /* Configurator keeps its native warm palette + Montserrat, matching the page. */
-      .dark-wrap .lava-studio-cfg{
+      .cfg-copy .lsub{ margin-top:14px; }
+      /* Picker re-themed LIGHT to match its light-section home. Overriding the
+         component's palette vars re-skins it entirely without touching the component. */
+      .configure .lava-studio-cfg{
         --text:"Montserrat",system-ui,sans-serif; --display:"Montserrat",system-ui,sans-serif;
+        --base:#E4E0D7; --surface:#F1EDE6; --raised:#FFFFFF; --raised-2:#EAE5DB;
+        --hairline:var(--line-l); --hairline-strong:#BCB5A8;
+        --paper:var(--ink); --muted:var(--ink-dim); --faint:var(--ink-faint);
+        --accent-ink:#fff;
       }
+      .configure .cfg-select:focus{ box-shadow:0 0 0 3px rgba(23,19,14,.12); }
 
       /* LIGHT block */
       .lsection{ max-width:var(--max); margin:0 auto; padding:var(--section-y) var(--gutter) 0; }
@@ -446,24 +457,24 @@ const testimonials = [
       .lsection-head h2{ color:var(--ink); }
       .lsub{ margin-top:14px; color:var(--ink-dim); font-size:1.02rem; max-width:54ch; }
 
-      /* proof bars (on light) */
+      /* proof bars — dark panel */
       .bars{ display:flex; flex-direction:column; }
       .bar-row{ display:grid; grid-template-columns:230px 1fr 64px; gap:24px; align-items:center;
-        padding:22px 0; border-top:1px solid var(--line-l); }
-      .bar-row:last-child{ border-bottom:1px solid var(--line-l); }
-      .bar-name{ display:block; font-size:1rem; font-weight:600; color:var(--ink); }
-      .bar-part{ display:block; font-family:var(--mono); font-size:.72rem; color:var(--ink-faint); margin-top:5px; }
+        padding:22px 0; border-top:1px solid var(--line-d-2); }
+      .bar-row:last-child{ border-bottom:1px solid var(--line-d-2); }
+      .bar-name{ display:block; font-size:1rem; font-weight:600; color:var(--white); }
+      .bar-part{ display:block; font-family:var(--mono); font-size:.72rem; color:var(--white-faint); margin-top:5px; }
       .bar-stack{ display:flex; flex-direction:column; gap:8px; }
-      .bar-track{ position:relative; height:28px; background:#E1DCD2; border-radius:var(--r-bar); overflow:hidden; }
+      .bar-track{ position:relative; height:28px; background:rgba(244,237,224,.10); border-radius:var(--r-bar); overflow:hidden; }
       .bar{ position:absolute; inset:0 auto 0 0; height:100%; border-radius:var(--r-bar); }
-      /* Value contrast, not colour: LAVA is the solid dark bar, the rival a faint grey. */
-      .bar-lava{ background:var(--dark); }
-      .bar-rival{ background:#C9C2B4; }
+      /* Value contrast, not colour: LAVA is the solid bright bar, the rival a faint wash. */
+      .bar-lava{ background:var(--white); }
+      .bar-rival{ background:rgba(244,237,224,.30); }
       .bar-val{ position:absolute; left:14px; top:50%; transform:translateY(-50%);
         font-family:var(--mono); font-size:.72rem; z-index:1; }
-      .bar-val-lava{ color:var(--white); }
-      .bar-val-rival{ color:var(--ink-dim); }
-      .bar-save{ font-family:var(--mono); font-size:1.14rem; color:var(--ink); text-align:right; }
+      .bar-val-lava{ color:var(--dark); }
+      .bar-val-rival{ color:var(--white-dim); }
+      .bar-save{ font-family:var(--mono); font-size:1.14rem; color:var(--white); text-align:right; }
 
       /* testimonials */
       .testi-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }

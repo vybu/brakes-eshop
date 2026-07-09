@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { currentCart } from "@wix/ecom";
-import { COMPOUNDS, CALIPERS, CURRENCY, caliperLabel, type CompoundCode } from "../lib/lava-data";
+import { redirects } from "@wix/redirects";
+import { COMPOUNDS, CALIPERS, CURRENCY, caliperLabel, type CompoundCode, type Caliper } from "../lib/lava-data";
 import type { LavaCatalog } from "../lib/lava-catalog";
 
 // LAVA configurator — Studio design system.
@@ -12,13 +13,13 @@ import type { LavaCatalog } from "../lib/lava-catalog";
 // Reserved thermal gradient — the ONE signature element. Used only on the temp scale.
 const THERMAL = "linear-gradient(90deg,#E33D1B 0%,#E9682A 34%,#F1A361 66%,#FCEDCC 100%)";
 
-// One image per compound — shown in the card's left media panel, swaps on selection.
-const DEFAULT_IMAGES: Record<CompoundCode, string> = {
-  MK: "/gen2/pad-detail.jpg",
-  SR: "/gen2/compound-macro.jpg",
-  TW: "/gen2/caliper.jpg",
-  "TW/2": "/gen2/disc-topdown.jpg",
-  TWe: "/gen2/hero-assembly.jpg",
+// Discipline framing per compound — the ledger's second column.
+const USE: Record<CompoundCode, string> = {
+  MK: "Daily & fast road",
+  SR: "Spirited roads · odd track day",
+  TW: "Track days, all session",
+  "TW/2": "Race — hardest stops",
+  TWe: "Endurance — lowest wear",
 };
 // Full system temperature domain (°C) for the scale + per-compound brackets.
 const T_MIN = 20;
@@ -38,22 +39,58 @@ function pct(v: number): number {
 const WIX_STORES_APP_ID = "215238eb-22a5-4c36-9e7b-e7c08025e04e";
 
 type CartStatus = "idle" | "adding" | "added" | "error";
+type Axle = "front" | "rear" | "both" | "universal";
+
+// Step 2 groups the flat caliper list by vehicle name so a car's two axles sit
+// together; step 3 then picks Front / Rear / Both. A vehicle offers "Both" only
+// when it has BOTH a front and a rear fitment in the catalog (today: BMW M2,
+// MX-5 NB BBK, MX-5 NB MID) — otherwise Rear/Both are disabled. Universal-fit
+// parts (big-brake kits, AP/CP calipers) have no axle, so they get a single set.
+interface Vehicle {
+  name: string;
+  front?: Caliper;
+  rear?: Caliper;
+  universal?: Caliper;
+}
+const VEHICLES: Vehicle[] = (() => {
+  const map = new Map<string, Vehicle>();
+  const order: string[] = [];
+  for (const c of CALIPERS) {
+    if (!map.has(c.name)) { map.set(c.name, { name: c.name }); order.push(c.name); }
+    const v = map.get(c.name)!;
+    if (c.position === "Front") v.front = c;
+    else if (c.position === "Rear") v.rear = c;
+    else v.universal = c;
+  }
+  return order.map((n) => map.get(n)!);
+})();
+
+// Default axle for a vehicle: front if it has one, else rear, else the universal set.
+function defaultAxle(v: Vehicle): Axle {
+  return v.front ? "front" : v.rear ? "rear" : "universal";
+}
+// The caliper fitment(s) a (vehicle, axle) selection resolves to — one, or two for "both".
+function calipersFor(v: Vehicle, a: Axle): Caliper[] {
+  if (a === "both") return v.front && v.rear ? [v.front, v.rear] : [];
+  if (a === "front") return v.front ? [v.front] : [];
+  if (a === "rear") return v.rear ? [v.rear] : [];
+  return v.universal ? [v.universal] : [];
+}
 
 export default function ConfiguratorStudio({
   heading = "Configure your set",
-  compoundImages = {},
   catalog = {},
   appId = WIX_STORES_APP_ID,
 }: {
   heading?: string;
-  compoundImages?: Partial<Record<CompoundCode, string>>;
   catalog?: LavaCatalog;
   appId?: string;
 }) {
   const [compound, setCompound] = useState<CompoundCode>("SR");
-  const [caliperIdx, setCaliperIdx] = useState(0);
+  const [vehicleIdx, setVehicleIdx] = useState(0);
+  const [axle, setAxle] = useState<Axle>(() => defaultAxle(VEHICLES[0]));
   const [status, setStatus] = useState<CartStatus>("idle");
-  const images = { ...DEFAULT_IMAGES, ...compoundImages };
+  const [checkingOut, setCheckingOut] = useState(false);
   const cellRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   // Radiogroup keyboard nav: arrows move selection AND focus to the next option.
@@ -65,40 +102,80 @@ export default function ConfiguratorStudio({
     cellRefs.current[next]?.focus();
   }
 
-  const caliper = useMemo(() => CALIPERS[caliperIdx] ?? CALIPERS[0], [caliperIdx]);
-  const price = caliper?.prices[compound];
+  const vehicle = useMemo(() => VEHICLES[vehicleIdx] ?? VEHICLES[0], [vehicleIdx]);
+  const isUniversal = Boolean(vehicle.universal && !vehicle.front && !vehicle.rear);
+  const axleAvail = {
+    front: Boolean(vehicle.front),
+    rear: Boolean(vehicle.rear),
+    both: Boolean(vehicle.front && vehicle.rear),
+  };
+  const selCalipers = calipersFor(vehicle, axle);
+  // Price for a compound at the current axle — sums the fitments (two, for "both").
+  const priceForCompound = (code: CompoundCode) =>
+    selCalipers.reduce((sum, c) => sum + c.prices[code], 0);
+  const price = priceForCompound(compound);
   const compoundMeta = COMPOUNDS.find((c) => c.code === compound);
-  const [lo, hi] = compoundMeta ? parseTemp(compoundMeta.temp) : [T_MIN, T_MAX];
-  const part = `LP-${caliper?.id}-${compound.replace("/", "")}`;
+  const cc = compound.replace("/", "");
+  const part = selCalipers.map((c) => `LP-${c.id}-${cc}`).join(" + ");
+  const axleMeta = axle === "both" ? "Front + rear · full car"
+    : axle === "front" ? "Front set"
+    : axle === "rear" ? "Rear set"
+    : "Full set";
 
-  // Resolve the current (compound, caliper) selection to its live Wix variant.
+  // Resolve the current (compound, axle) selection to its live Wix variant(s).
+  // Both front and rear are variants of the SAME per-compound product.
   const entry = catalog[compound];
-  const variantId = caliper ? entry?.variants[caliperLabel(caliper)] : undefined;
-  const canBuy = Boolean(entry?.productId && variantId);
+  const variantIds = selCalipers.map((c) => entry?.variants[caliperLabel(c)]);
+  const canBuy = Boolean(entry?.productId) && variantIds.length > 0 && variantIds.every(Boolean);
 
   async function handleAdd() {
-    if (!canBuy || !entry || !variantId) return;
+    if (!canBuy || !entry) return;
     setStatus("adding");
     try {
       const { cart } = await currentCart.addToCurrentCart({
-        lineItems: [
-          {
-            catalogReference: {
-              appId,
-              catalogItemId: entry.productId,
-              options: { variantId },
-            },
-            quantity: 1,
+        lineItems: variantIds.map((variantId) => ({
+          catalogReference: {
+            appId,
+            catalogItemId: entry.productId,
+            options: { variantId: variantId! },
           },
-        ],
+          quantity: 1,
+        })),
       });
       window.dispatchEvent(new CustomEvent("cart-updated", { detail: { cart } }));
+      // Stay in "added" so the checkout / add-another actions persist. Any edit
+      // to the selection below resets status to "idle" via its own handler.
       setStatus("added");
-      setTimeout(() => setStatus("idle"), 2500);
     } catch (err) {
       console.error("[cart] add failed:", err);
       setStatus("error");
     }
+  }
+
+  // Proceed to a Wix-hosted checkout of the current cart (same flow as CartButton).
+  async function handleCheckout() {
+    if (checkingOut) return;
+    setCheckingOut(true);
+    try {
+      const { checkoutId } = await currentCart.createCheckoutFromCurrentCart({
+        channelType: currentCart.ChannelType.WEB,
+      });
+      const { redirectSession } = await redirects.createRedirectSession({
+        ecomCheckout: { checkoutId },
+        callbacks: { postFlowUrl: window.location.origin },
+      });
+      if (redirectSession?.fullUrl) window.location.href = redirectSession.fullUrl;
+      else setCheckingOut(false);
+    } catch (err) {
+      console.error("[cart] checkout failed:", err);
+      setCheckingOut(false);
+    }
+  }
+
+  function chooseVehicle(i: number) {
+    setVehicleIdx(i);
+    setAxle(defaultAxle(VEHICLES[i]));
+    setStatus("idle");
   }
 
   return (
@@ -109,27 +186,18 @@ export default function ConfiguratorStudio({
         <span className="cfg-x cfg-x-bl">+</span>
         <span className="cfg-x cfg-x-br">+</span>
 
-        <figure className="cfg-media">
-          <img src={images[compound]} alt={`${compoundMeta?.name ?? compound} compound`} />
-          <figcaption className="cfg-media-cap">
-            <span className="cfg-media-code">{compound}</span>
-            <span className="cfg-media-name">{compoundMeta?.name}</span>
-          </figcaption>
-        </figure>
-
         <div className="cfg-main">
         <header className="cfg-head">
           <div>
             <span className="cfg-kicker">Configurator</span>
             <h3>{heading}</h3>
           </div>
-          <span className="cfg-count">{CALIPERS.length} fitments · 5 compounds</span>
         </header>
 
         <div className="cfg-step">
           <span className="cfg-label" id="cfg-compound-label"><i>01</i> Compound</span>
           <div
-            className="cfg-cells"
+            className="cfg-ledger"
             role="radiogroup"
             aria-labelledby="cfg-compound-label"
             onKeyDown={(e) => {
@@ -138,8 +206,13 @@ export default function ConfiguratorStudio({
               if (dir) { e.preventDefault(); moveCompound(dir); }
             }}
           >
+            <div className="cfg-ledger-head" aria-hidden="true">
+              <span>Compound</span><span>Discipline</span>
+              <span>Operating window · 20&#8211;850&#8201;&deg;C</span><span>Set</span>
+            </div>
             {COMPOUNDS.map((c, i) => {
               const on = compound === c.code;
+              const [clo, chi] = parseTemp(c.temp);
               return (
               <button
                 key={c.code}
@@ -148,73 +221,112 @@ export default function ConfiguratorStudio({
                 role="radio"
                 aria-checked={on}
                 tabIndex={on ? 0 : -1}
-                className={`cfg-cell${on ? " on" : ""}`}
+                className={`cfg-lrow${on ? " on" : ""}`}
                 onClick={() => { setCompound(c.code); setStatus("idle"); }}
               >
-                <span className="cfg-cell-code">{c.code}</span>
-                <span className="cfg-cell-name">{c.name}</span>
+                <span className="cfg-lrow-code">{c.code}</span>
+                <span className="cfg-lrow-name">{c.name}<em>{USE[c.code]}</em></span>
+                <span className="cfg-lrow-bar" title={c.temp}>
+                  <span className="cfg-lrow-track" />
+                  <span
+                    className="cfg-lrow-fill"
+                    style={{ left: `${pct(clo)}%`, width: `${pct(chi) - pct(clo)}%`, background: THERMAL }}
+                  />
+                  <span className="cfg-lrow-hi" style={{ left: `${Math.min(pct(chi), 94)}%` }}>{chi}&deg;</span>
+                </span>
+                <span className="cfg-lrow-price">{priceForCompound(c.code)}<i>{CURRENCY}</i></span>
               </button>
               );
             })}
           </div>
+          {compoundMeta && (
+            <p className="cfg-ledger-note">
+              <b>{compoundMeta.code} · {compoundMeta.name}</b> — operating window <em>{compoundMeta.temp}</em> · {compoundMeta.rival}
+            </p>
+          )}
         </div>
 
-        {compoundMeta && (
-          <div className="cfg-scale">
-            <div className="cfg-scale-bar">
-              <div
-                className="cfg-scale-window"
-                style={{ left: `${pct(lo)}%`, width: `${pct(hi) - pct(lo)}%` }}
-              />
-            </div>
-            <div className="cfg-scale-ticks">
-              <span>20</span><span>200</span><span>400</span><span>600</span><span>850&#8201;&deg;C</span>
-            </div>
-            <p className="cfg-scale-note">
-              <b>{compoundMeta.name}</b> — operating window <em>{compoundMeta.temp}</em> · {compoundMeta.rival}
-            </p>
-          </div>
-        )}
-
         <div className="cfg-step">
-          <span className="cfg-label"><i>02</i> Caliper fitment</span>
+          <span className="cfg-label"><i>02</i> Fitment</span>
           <div className="cfg-select-wrap">
             <select
               className="cfg-select"
-              value={caliperIdx}
-              aria-label="Caliper fitment"
-              onChange={(e) => { setCaliperIdx(Number(e.target.value)); setStatus("idle"); }}
+              value={vehicleIdx}
+              aria-label="Vehicle fitment"
+              onChange={(e) => chooseVehicle(Number(e.target.value))}
             >
-              {CALIPERS.map((c, i) => (
-                <option key={i} value={i}>
-                  {caliperLabel(c)}
-                </option>
+              {VEHICLES.map((v, i) => (
+                <option key={i} value={i}>{v.name}</option>
               ))}
             </select>
             <span className="cfg-caret" aria-hidden="true">&#9662;</span>
           </div>
         </div>
 
+        <div className="cfg-step">
+          <span className="cfg-label"><i>03</i> Axle set</span>
+          {isUniversal ? (
+            <div className="cfg-axle">
+              <button type="button" className="cfg-axle-cell on" role="radio" aria-checked="true">
+                <span className="cfg-axle-label">Full set</span>
+                <span className="cfg-axle-price">{priceForCompound(compound)}{CURRENCY}</span>
+              </button>
+            </div>
+          ) : (
+            <div className="cfg-axle" role="radiogroup" aria-label="Axle set">
+              {(["front", "rear", "both"] as const).map((a) => {
+                const avail = axleAvail[a];
+                const on = axle === a && avail;
+                const label = a === "front" ? "Front set" : a === "rear" ? "Rear set" : "Front + rear";
+                const cals = calipersFor(vehicle, a);
+                const p = cals.reduce((s, c) => s + c.prices[compound], 0);
+                return (
+                  <button
+                    key={a}
+                    type="button"
+                    role="radio"
+                    aria-checked={on}
+                    disabled={!avail}
+                    className={`cfg-axle-cell${on ? " on" : ""}`}
+                    onClick={() => { setAxle(a); setStatus("idle"); }}
+                  >
+                    <span className="cfg-axle-label">{label}</span>
+                    <span className="cfg-axle-price">{avail ? `${p}${CURRENCY}` : "—"}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
         <footer className="cfg-foot">
           <div className="cfg-price">
             <span className="cfg-part">{part}</span>
             <span className="cfg-amt">{price}<i>{CURRENCY}</i></span>
-            <span className="cfg-meta">{compound} · {caliper?.name}{caliper?.position ? ` · ${caliper.position}` : ""} · per set</span>
+            <span className="cfg-meta">{compound} · {vehicle.name} · {axleMeta}</span>
           </div>
-          <button
-            type="button"
-            className={`cfg-add${status === "added" ? " done" : ""}`}
-            onClick={handleAdd}
-            disabled={!canBuy || status === "adding"}
-          >
-            {!canBuy
-              ? "Unavailable"
-              : status === "adding"
-                ? "Adding…"
-                : status === "added"
-                  ? "Added to set ✓"
-                  : "Add to set"}
-          </button>
+          {status === "added" ? (
+            <div className="cfg-actions">
+              <span className="cfg-added-note" role="status">Added to set ✓</span>
+              <div className="cfg-actions-btns">
+                <button type="button" className="cfg-add-2" onClick={() => setStatus("idle")}>
+                  Add another set
+                </button>
+                <button type="button" className="cfg-add" onClick={handleCheckout} disabled={checkingOut}>
+                  {checkingOut ? "Redirecting…" : "Proceed to checkout"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="cfg-add"
+              onClick={handleAdd}
+              disabled={!canBuy || status === "adding"}
+            >
+              {!canBuy ? "Unavailable" : status === "adding" ? "Adding…" : "Add to set"}
+            </button>
+          )}
         </footer>
         {status === "error" && (
           <p className="cfg-err" role="alert">Couldn’t add to cart — please try again.</p>
@@ -229,7 +341,7 @@ export default function ConfiguratorStudio({
         .lava-studio-cfg{
           --base:#100E0B; --surface:#17130E; --raised:#1F1A13; --raised-2:#282117;
           --hairline:#2A241B; --hairline-strong:#3A3225; --paper:#F4EDE0; --muted:#A69C88;
-          --faint:#6E6656; --accent:#E5451D; --accent-hi:#F1521F; --accent-ink:#120D08;
+          --faint:#6E6656; --accent:#C1001F; --accent-hi:#E11437; --accent-ink:#fff;
           --thermal:${THERMAL};
           --mono:"JetBrains Mono",ui-monospace,monospace;
           /* Neutral system defaults — consumers override --text/--display with their
@@ -243,26 +355,13 @@ export default function ConfiguratorStudio({
         .cfg-frame{
           position:relative; background:var(--raised); border:1px solid var(--hairline);
           border-radius:12px; overflow:hidden;
-          display:grid; grid-template-columns:minmax(300px,42%) 1fr; align-items:stretch;
         }
         .cfg-x{ position:absolute; z-index:2; color:var(--hairline-strong); font-family:var(--mono);
           font-size:12px; line-height:1; user-select:none; }
         .cfg-x-tl{ top:10px; left:10px; } .cfg-x-tr{ top:10px; right:10px; }
         .cfg-x-bl{ bottom:10px; left:10px; } .cfg-x-br{ bottom:10px; right:10px; }
 
-        /* left media panel — image of the selected compound */
-        .cfg-media{ position:relative; margin:0; min-height:100%; overflow:hidden;
-          border-right:1px solid var(--hairline); background:var(--base); }
-        .cfg-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-          filter:contrast(1.05) saturate(.92); }
-        .cfg-media::after{ content:""; position:absolute; inset:0;
-          background:linear-gradient(180deg, rgba(16,14,11,0) 40%, rgba(16,14,11,.72) 100%); }
-        .cfg-media-cap{ position:absolute; left:22px; bottom:20px; z-index:1;
-          display:flex; align-items:baseline; gap:10px; }
-        .cfg-media-code{ font-family:var(--mono); font-weight:500; font-size:20px; color:var(--paper); }
-        .cfg-media-name{ font-size:13px; letter-spacing:.02em; color:var(--muted); }
-
-        .cfg-main{ padding:32px; }
+        .cfg-main{ padding:clamp(24px,3.5vw,40px); }
 
         .cfg-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:28px; }
         .cfg-kicker{ display:block; font-family:var(--mono); font-size:12px; letter-spacing:.14em;
@@ -275,28 +374,44 @@ export default function ConfiguratorStudio({
           letter-spacing:.14em; text-transform:uppercase; color:var(--faint); margin-bottom:12px; }
         .cfg-label i{ font-style:normal; color:var(--muted); }
 
-        .cfg-cells{ display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
-        .cfg-cell{ display:flex; flex-direction:column; align-items:flex-start; gap:4px;
-          padding:12px 10px; background:var(--surface); border:1px solid var(--hairline);
-          border-radius:4px; color:var(--muted); cursor:pointer; text-align:left;
-          transition:border-color var(--dur,200ms) var(--ease), background 200ms var(--ease), color 200ms var(--ease); }
-        .cfg-cell:hover{ border-color:var(--hairline-strong); color:var(--paper); }
-        .cfg-cell.on{ border-color:var(--paper); background:var(--raised-2); color:var(--paper); }
-        .cfg-cell-code{ font-family:var(--mono); font-weight:500; font-size:15px; letter-spacing:.02em; }
-        .cfg-cell-name{ font-size:11px; color:var(--faint); }
-        .cfg-cell.on .cfg-cell-name{ color:var(--muted); }
-
-        .cfg-scale{ margin:0 0 24px; padding:16px; background:var(--surface);
-          border:1px solid var(--hairline); border-radius:4px; }
-        .cfg-scale-bar{ position:relative; height:10px; border-radius:2px; background:var(--thermal);
-          opacity:.42; }
-        .cfg-scale-window{ position:absolute; top:-3px; bottom:-3px; border:2px solid var(--paper);
-          border-radius:3px; box-shadow:0 0 0 3px var(--surface); transition:left 200ms var(--ease), width 200ms var(--ease); }
-        .cfg-scale-ticks{ display:flex; justify-content:space-between; margin-top:8px;
-          font-family:var(--mono); font-size:11px; color:var(--faint); }
-        .cfg-scale-note{ margin:12px 0 0; font-size:13px; color:var(--muted); }
-        .cfg-scale-note b{ color:var(--paper); font-weight:600; }
-        .cfg-scale-note em{ font-style:normal; font-family:var(--mono); color:var(--paper); }
+        /* Compound picker — a spec-ledger: crisp data table, flush accent rule on the
+           selected row (no floating outline), one shared 20–850°C axis across rows. */
+        .cfg-ledger{ background:var(--surface); border:1px solid var(--hairline);
+          border-radius:6px; overflow:hidden; }
+        .cfg-ledger-head{ display:grid; grid-template-columns:60px 1.1fr 2fr 88px; gap:16px;
+          padding:10px 18px; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em;
+          text-transform:uppercase; color:var(--faint); background:var(--base);
+          border-bottom:1px solid var(--hairline); }
+        .cfg-ledger-head span:last-child{ text-align:right; }
+        .cfg-lrow{ position:relative; display:grid; grid-template-columns:60px 1.1fr 2fr 88px;
+          gap:16px; align-items:center; width:100%; padding:15px 18px; background:none; border:none;
+          border-top:1px solid var(--hairline); cursor:pointer; text-align:left; color:var(--muted);
+          transition:background 150ms var(--ease); }
+        .cfg-ledger > .cfg-lrow:first-of-type{ border-top:none; }
+        .cfg-lrow:hover{ background:var(--raised); }
+        .cfg-lrow.on{ background:var(--raised-2); color:var(--paper); }
+        .cfg-lrow.on::before{ content:""; position:absolute; left:0; top:0; bottom:0;
+          width:3px; background:var(--accent); }
+        .cfg-lrow:focus-visible{ outline:none; box-shadow:inset 0 0 0 2px var(--paper); }
+        .cfg-lrow-code{ font-family:var(--mono); font-weight:500; font-size:15px;
+          letter-spacing:.02em; color:var(--muted); }
+        .cfg-lrow.on .cfg-lrow-code{ color:var(--accent-hi); }
+        .cfg-lrow-name{ font-size:14px; color:var(--paper); }
+        .cfg-lrow-name em{ display:block; font-style:normal; font-size:11.5px; color:var(--faint); margin-top:3px; }
+        .cfg-lrow-bar{ position:relative; height:8px; }
+        .cfg-lrow-track{ position:absolute; inset:0; border-radius:2px; background:var(--base);
+          border:1px solid var(--hairline); }
+        .cfg-lrow.on .cfg-lrow-track{ border-color:var(--hairline-strong); }
+        .cfg-lrow-fill{ position:absolute; top:0; bottom:0; border-radius:2px; opacity:.5; }
+        .cfg-lrow.on .cfg-lrow-fill{ opacity:1; }
+        .cfg-lrow-hi{ position:absolute; top:-15px; transform:translateX(-50%);
+          font-family:var(--mono); font-size:10px; color:var(--faint); }
+        .cfg-lrow.on .cfg-lrow-hi{ color:var(--paper); }
+        .cfg-lrow-price{ text-align:right; font-family:var(--mono); font-size:16px; font-weight:500; color:var(--paper); }
+        .cfg-lrow-price i{ font-style:normal; font-size:12px; color:var(--muted); margin-left:2px; }
+        .cfg-ledger-note{ margin:14px 0 0; font-size:13px; color:var(--muted); }
+        .cfg-ledger-note b{ color:var(--paper); font-weight:600; }
+        .cfg-ledger-note em{ font-style:normal; font-family:var(--mono); color:var(--paper); }
 
         .cfg-select-wrap{ position:relative; }
         .cfg-select{ width:100%; appearance:none; -webkit-appearance:none;
@@ -306,6 +421,20 @@ export default function ConfiguratorStudio({
         .cfg-select:focus{ outline:none; border-color:var(--paper); box-shadow:0 0 0 3px rgba(244,237,224,.14); }
         .cfg-caret{ position:absolute; right:14px; top:50%; transform:translateY(-50%);
           pointer-events:none; color:var(--faint); font-size:12px; }
+
+        /* Axle set — segmented Front / Rear / Both; unavailable axles disabled. */
+        .cfg-axle{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+        .cfg-axle:has(> :only-child){ grid-template-columns:1fr; }
+        .cfg-axle-cell{ display:flex; flex-direction:column; align-items:flex-start; gap:5px;
+          padding:13px 14px; background:var(--surface); border:1px solid var(--hairline);
+          border-radius:6px; color:var(--muted); cursor:pointer; text-align:left;
+          transition:border-color 160ms var(--ease), background 160ms var(--ease), color 160ms var(--ease); }
+        .cfg-axle-cell:hover:not(:disabled):not(.on){ border-color:var(--hairline-strong); color:var(--paper); }
+        .cfg-axle-cell.on{ border-color:var(--accent); background:var(--raised-2); color:var(--paper); }
+        .cfg-axle-cell:disabled{ opacity:.4; cursor:default; }
+        .cfg-axle-label{ font-size:14px; font-weight:500; }
+        .cfg-axle-price{ font-family:var(--mono); font-size:12px; color:var(--faint); }
+        .cfg-axle-cell.on .cfg-axle-price{ color:var(--accent-hi); }
 
         .cfg-foot{ display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
           margin-top:28px; padding-top:24px; border-top:1px solid var(--hairline); }
@@ -319,23 +448,31 @@ export default function ConfiguratorStudio({
         .cfg-add{ background:var(--accent); color:var(--accent-ink); border:none; border-radius:6px;
           padding:15px 26px; font-family:var(--text); font-size:14px; font-weight:600; letter-spacing:.01em;
           cursor:pointer; white-space:nowrap; transition:background 120ms var(--ease), transform 120ms var(--ease); }
-        .cfg-add:hover{ background:var(--accent-hi); transform:translateY(-2px); }
-        .cfg-add.done{ background:transparent; color:var(--paper); border:1px solid var(--hairline-strong); }
+        .cfg-add:hover:not(:disabled){ background:var(--accent-hi); transform:translateY(-2px); }
         .cfg-add:disabled{ cursor:default; opacity:.55; transform:none; }
-        .cfg-add.done:disabled{ opacity:1; }
         .cfg-err{ margin:14px 0 0; font-family:var(--mono); font-size:12px; color:var(--accent-hi); }
 
-        @media (max-width:760px){
-          .cfg-frame{ grid-template-columns:1fr; }
-          .cfg-media{ min-height:200px; border-right:none; border-bottom:1px solid var(--hairline); }
-        }
+        /* Post-add state: primary "Proceed to checkout" + secondary "Add another set". */
+        .cfg-actions{ display:flex; flex-direction:column; align-items:flex-end; gap:12px; }
+        .cfg-added-note{ font-family:var(--mono); font-size:12px; letter-spacing:.02em; color:var(--accent-hi); }
+        .cfg-actions-btns{ display:flex; gap:10px; }
+        .cfg-add-2{ background:transparent; color:var(--paper); border:1px solid var(--hairline-strong);
+          border-radius:6px; padding:15px 22px; font-family:var(--text); font-size:14px; font-weight:600;
+          letter-spacing:.01em; cursor:pointer; white-space:nowrap;
+          transition:border-color 120ms var(--ease), color 120ms var(--ease); }
+        .cfg-add-2:hover{ border-color:var(--paper); }
+
         @media (max-width:560px){
           .cfg-main{ padding:22px; }
-          .cfg-cells{ grid-template-columns:repeat(3,1fr); }
+          .cfg-ledger-head, .cfg-lrow{ grid-template-columns:50px 1fr 76px; }
+          .cfg-ledger-head span:nth-child(3), .cfg-lrow-bar{ display:none; }
           .cfg-head{ flex-direction:column; gap:6px; }
           .cfg-count{ text-align:left; }
           .cfg-foot{ flex-direction:column; align-items:stretch; }
           .cfg-add{ width:100%; }
+          .cfg-actions{ align-items:stretch; }
+          .cfg-actions-btns{ flex-direction:column-reverse; }
+          .cfg-add-2{ width:100%; }
         }
         @media (prefers-reduced-motion:reduce){
           .lava-studio-cfg *{ transition:none !important; }

@@ -65,11 +65,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "101",
     "prices": {
-      "MK": 600,
-      "SR": 700,
-      "TW": 750,
-      "TW/2": 800,
-      "TWe": 900
+      "MK": 140,
+      "SR": 165,
+      "TW": 175,
+      "TW/2": 185,
+      "TWe": 210
     }
   },
   {
@@ -77,11 +77,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "101",
     "prices": {
-      "MK": 600,
-      "SR": 700,
-      "TW": 750,
-      "TW/2": 800,
-      "TWe": 900
+      "MK": 140,
+      "SR": 165,
+      "TW": 175,
+      "TW/2": 185,
+      "TWe": 210
     }
   },
   {
@@ -89,11 +89,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "103",
     "prices": {
-      "MK": 700,
-      "SR": 900,
-      "TW": 950,
-      "TW/2": 1000,
-      "TWe": 1100
+      "MK": 165,
+      "SR": 210,
+      "TW": 220,
+      "TW/2": 235,
+      "TWe": 255
     }
   },
   {
@@ -101,11 +101,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "105",
     "prices": {
-      "MK": 700,
-      "SR": 800,
-      "TW": 900,
-      "TW/2": 1000,
-      "TWe": 1100
+      "MK": 165,
+      "SR": 185,
+      "TW": 210,
+      "TW/2": 235,
+      "TWe": 255
     }
   },
   {
@@ -113,11 +113,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "106",
     "prices": {
-      "MK": 800,
-      "SR": 900,
-      "TW": 950,
-      "TW/2": 1000,
-      "TWe": 1100
+      "MK": 185,
+      "SR": 210,
+      "TW": 220,
+      "TW/2": 235,
+      "TWe": 255
     }
   },
   {
@@ -125,11 +125,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "107",
     "prices": {
-      "MK": 700,
-      "SR": 800,
-      "TW": 900,
-      "TW/2": 950,
-      "TWe": 1050
+      "MK": 165,
+      "SR": 185,
+      "TW": 210,
+      "TW/2": 220,
+      "TWe": 245
     }
   },
   {
@@ -137,11 +137,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "125",
     "prices": {
-      "MK": 700,
-      "SR": 800,
-      "TW": 900,
-      "TW/2": 1000,
-      "TWe": 1100
+      "MK": 165,
+      "SR": 185,
+      "TW": 210,
+      "TW/2": 235,
+      "TWe": 255
     }
   },
   {
@@ -149,11 +149,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "116",
     "prices": {
-      "MK": 700,
-      "SR": 800,
-      "TW": 850,
-      "TW/2": 900,
-      "TWe": 1000
+      "MK": 165,
+      "SR": 185,
+      "TW": 200,
+      "TW/2": 210,
+      "TWe": 235
     }
   },
   {
@@ -161,11 +161,11 @@ export const CALIPERS: Caliper[] = [
     "position": null,
     "id": "108",
     "prices": {
-      "MK": 550,
-      "SR": 600,
-      "TW": 650,
-      "TW/2": 700,
-      "TWe": 800
+      "MK": 130,
+      "SR": 140,
+      "TW": 150,
+      "TW/2": 165,
+      "TWe": 185
     }
   },
   {
@@ -173,11 +173,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Rear",
     "id": "114",
     "prices": {
-      "MK": 500,
-      "SR": 600,
-      "TW": 600,
-      "TW/2": 650,
-      "TWe": 750
+      "MK": 115,
+      "SR": 140,
+      "TW": 140,
+      "TW/2": 150,
+      "TWe": 175
     }
   },
   {
@@ -185,11 +185,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "110",
     "prices": {
-      "MK": 500,
-      "SR": 650,
-      "TW": 700,
-      "TW/2": 800,
-      "TWe": 900
+      "MK": 115,
+      "SR": 150,
+      "TW": 165,
+      "TW/2": 185,
+      "TWe": 210
     }
   },
   {
@@ -197,11 +197,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Rear",
     "id": "113",
     "prices": {
-      "MK": 600,
-      "SR": 700,
-      "TW": 800,
-      "TW/2": 850,
-      "TWe": 950
+      "MK": 140,
+      "SR": 165,
+      "TW": 185,
+      "TW/2": 200,
+      "TWe": 220
     }
   },
   {
@@ -209,11 +209,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "112",
     "prices": {
-      "MK": 700,
-      "SR": 800,
-      "TW": 850,
-      "TW/2": 900,
-      "TWe": 1000
+      "MK": 165,
+      "SR": 185,
+      "TW": 200,
+      "TW/2": 210,
+      "TWe": 235
     }
   },
   {
@@ -221,11 +221,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "111",
     "prices": {
-      "MK": 700,
-      "SR": 800,
-      "TW": 900,
-      "TW/2": 1000,
-      "TWe": 1100
+      "MK": 165,
+      "SR": 185,
+      "TW": 210,
+      "TW/2": 235,
+      "TWe": 255
     }
   },
   {
@@ -233,11 +233,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Rear",
     "id": "119",
     "prices": {
-      "MK": 500,
-      "SR": 650,
-      "TW": 700,
-      "TW/2": 800,
-      "TWe": 900
+      "MK": 115,
+      "SR": 150,
+      "TW": 165,
+      "TW/2": 185,
+      "TWe": 210
     }
   },
   {
@@ -245,11 +245,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "118",
     "prices": {
-      "MK": 800,
-      "SR": 900,
-      "TW": 950,
-      "TW/2": 1000,
-      "TWe": 1100
+      "MK": 185,
+      "SR": 210,
+      "TW": 220,
+      "TW/2": 235,
+      "TWe": 255
     }
   },
   {
@@ -257,11 +257,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "120",
     "prices": {
-      "MK": 650,
-      "SR": 800,
-      "TW": 850,
-      "TW/2": 900,
-      "TWe": 1000
+      "MK": 150,
+      "SR": 185,
+      "TW": 200,
+      "TW/2": 210,
+      "TWe": 235
     }
   },
   {
@@ -269,11 +269,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Rear",
     "id": "121",
     "prices": {
-      "MK": 550,
-      "SR": 650,
-      "TW": 700,
-      "TW/2": 750,
-      "TWe": 850
+      "MK": 130,
+      "SR": 150,
+      "TW": 165,
+      "TW/2": 175,
+      "TWe": 200
     }
   },
   {
@@ -281,11 +281,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Rear",
     "id": "123",
     "prices": {
-      "MK": 450,
-      "SR": 550,
-      "TW": 600,
-      "TW/2": 650,
-      "TWe": 750
+      "MK": 105,
+      "SR": 130,
+      "TW": 140,
+      "TW/2": 150,
+      "TWe": 175
     }
   },
   {
@@ -293,11 +293,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "109",
     "prices": {
-      "MK": 450,
-      "SR": 550,
-      "TW": 600,
-      "TW/2": 650,
-      "TWe": 750
+      "MK": 105,
+      "SR": 130,
+      "TW": 140,
+      "TW/2": 150,
+      "TWe": 175
     }
   },
   {
@@ -305,11 +305,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "102",
     "prices": {
-      "MK": 550,
-      "SR": 650,
-      "TW": 700,
-      "TW/2": 750,
-      "TWe": 850
+      "MK": 130,
+      "SR": 150,
+      "TW": 165,
+      "TW/2": 175,
+      "TWe": 200
     }
   },
   {
@@ -317,11 +317,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "117",
     "prices": {
-      "MK": 550,
-      "SR": 650,
-      "TW": 700,
-      "TW/2": 750,
-      "TWe": 850
+      "MK": 130,
+      "SR": 150,
+      "TW": 165,
+      "TW/2": 175,
+      "TWe": 200
     }
   },
   {
@@ -329,11 +329,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Rear",
     "id": "115",
     "prices": {
-      "MK": 500,
-      "SR": 600,
-      "TW": 650,
-      "TW/2": 700,
-      "TWe": 800
+      "MK": 115,
+      "SR": 140,
+      "TW": 150,
+      "TW/2": 165,
+      "TWe": 185
     }
   },
   {
@@ -341,11 +341,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Front",
     "id": "124",
     "prices": {
-      "MK": 500,
-      "SR": 600,
-      "TW": 650,
-      "TW/2": 700,
-      "TWe": 800
+      "MK": 115,
+      "SR": 140,
+      "TW": 150,
+      "TW/2": 165,
+      "TWe": 185
     }
   },
   {
@@ -353,11 +353,11 @@ export const CALIPERS: Caliper[] = [
     "position": "Rear",
     "id": "122",
     "prices": {
-      "MK": 450,
-      "SR": 550,
-      "TW": 600,
-      "TW/2": 650,
-      "TWe": 750
+      "MK": 105,
+      "SR": 130,
+      "TW": 140,
+      "TW/2": 150,
+      "TWe": 175
     }
   },
   {
@@ -365,11 +365,11 @@ export const CALIPERS: Caliper[] = [
     "position": null,
     "id": "302",
     "prices": {
-      "MK": 800,
-      "SR": 900,
-      "TW": 950,
-      "TW/2": 1000,
-      "TWe": 1100
+      "MK": 185,
+      "SR": 210,
+      "TW": 220,
+      "TW/2": 235,
+      "TWe": 255
     }
   },
   {
@@ -377,11 +377,11 @@ export const CALIPERS: Caliper[] = [
     "position": null,
     "id": "301",
     "prices": {
-      "MK": 800,
-      "SR": 900,
-      "TW": 950,
-      "TW/2": 1000,
-      "TWe": 1100
+      "MK": 185,
+      "SR": 210,
+      "TW": 220,
+      "TW/2": 235,
+      "TWe": 255
     }
   },
   {
@@ -389,11 +389,11 @@ export const CALIPERS: Caliper[] = [
     "position": null,
     "id": "303",
     "prices": {
-      "MK": 700,
-      "SR": 800,
-      "TW": 900,
-      "TW/2": 950,
-      "TWe": 1050
+      "MK": 165,
+      "SR": 185,
+      "TW": 210,
+      "TW/2": 220,
+      "TWe": 245
     }
   },
   {
@@ -401,11 +401,11 @@ export const CALIPERS: Caliper[] = [
     "position": null,
     "id": "304",
     "prices": {
-      "MK": 700,
-      "SR": 800,
-      "TW": 900,
-      "TW/2": 950,
-      "TWe": 1050
+      "MK": 165,
+      "SR": 185,
+      "TW": 210,
+      "TW/2": 220,
+      "TWe": 245
     }
   }
 ];
