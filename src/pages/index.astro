@@ -51,6 +51,7 @@ const compare = [
 ];
 
 const features = [
+  { key: "chem", tab: "Compound science", head: "State-of-the-art friction chemistry", body: "Every LAVA compound is engineered from the binder up — proprietary friction formulations developed through years of in-house R&D, not rebadged from a catalogue. Advanced resin and fibre chemistry is what holds the bite flat from the first cold stop to the end of a hot session.", img: "/gen2/hero-assembly.jpg" },
   { key: "fit", tab: "Exact fit", head: "Modelled to your caliper, not filed to it", body: "Every backing plate is drawn to the caliper it serves — drop-in, no shims, no rattle, no rework in the pit lane.", img: "/gen2/caliper.jpg" },
   { key: "heat", tab: "Thermal range", head: "One calibrated scale, street to endurance", body: "Five compounds spanning 20–850 °C. Each is defined by the window it holds — read the bracket, not the marketing.", img: "/gen2/disc-topdown.jpg" },
   { key: "wear", tab: "Proven wear", head: "TWe marks the disc by 0.001 mm a session", body: "Our endurance compound records the lowest wear in the range and is kind to the disc it rides — measured, not claimed.", img: "/gen2/compound-macro.jpg" },
@@ -67,9 +68,9 @@ const testimonials = [
 const SITE = Astro.site?.href.replace(/\/$/, "") ?? "";
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
 const description =
-  `LAVA competition brake pads — the friction class of Pagid, Brembo and Ferodo at a ` +
-  `fraction of the price. Five compounds from fast road to endurance, configured to your ` +
-  `exact caliper. From ${FROM_PRICE} € per set, made in Poland.`;
+  `LAVA competition brake pads — state-of-the-art friction chemistry and in-house R&D at the ` +
+  `friction class of Pagid, Brembo and Ferodo, for a fraction of the price. Five compounds from ` +
+  `fast road to endurance, configured to your exact caliper. From ${FROM_PRICE} € per set.`;
 const ogImage = `${SITE}/apex/hero-pad.png`;
 
 // Product JSON-LD, priced from the real catalog: one Product per compound with an
@@ -161,8 +162,9 @@ const jsonLd = {
             <span class="eyebrow">Performance brake pads</span>
             <h1>Track focused<br /><span class="dim">street priced</span></h1>
             <p class="lede">
-              LAVA competition pads are engineered for track-day, time-attack, and spirited road
-              driving — the friction class of Pagid, Brembo and Ferodo, sold for a fraction.
+              State-of-the-art friction chemistry and years of in-house R&D — engineered for
+              track-day, time-attack and spirited road driving, at the friction class of Pagid,
+              Brembo and Ferodo for a fraction of the price.
             </p>
             <a href="#configure" class="btn btn-primary btn-lg">Configure your set</a>
           </div>
