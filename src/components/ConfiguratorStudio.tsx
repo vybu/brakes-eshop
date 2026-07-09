@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react";
-import { COMPOUNDS, CALIPERS, CURRENCY, type CompoundCode } from "../lib/lava-data";
+import { useMemo, useRef, useState } from "react";
+import { currentCart } from "@wix/ecom";
+import { COMPOUNDS, CALIPERS, CURRENCY, caliperLabel, type CompoundCode } from "../lib/lava-data";
+import type { LavaCatalog } from "../lib/lava-catalog";
 
 // LAVA configurator — Studio design system.
 // Instrument-grade: labelled steps, segmented compound row (flat accent selection,
@@ -32,23 +34,72 @@ function pct(v: number): number {
   return ((v - T_MIN) / (T_MAX - T_MIN)) * 100;
 }
 
+// The Wix Stores app id — required in every cart catalogReference.
+const WIX_STORES_APP_ID = "215238eb-22a5-4c36-9e7b-e7c08025e04e";
+
+type CartStatus = "idle" | "adding" | "added" | "error";
+
 export default function ConfiguratorStudio({
   heading = "Configure your set",
   compoundImages = {},
+  catalog = {},
+  appId = WIX_STORES_APP_ID,
 }: {
   heading?: string;
   compoundImages?: Partial<Record<CompoundCode, string>>;
+  catalog?: LavaCatalog;
+  appId?: string;
 }) {
   const [compound, setCompound] = useState<CompoundCode>("SR");
   const [caliperIdx, setCaliperIdx] = useState(0);
-  const [added, setAdded] = useState(false);
+  const [status, setStatus] = useState<CartStatus>("idle");
   const images = { ...DEFAULT_IMAGES, ...compoundImages };
+  const cellRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Radiogroup keyboard nav: arrows move selection AND focus to the next option.
+  function moveCompound(dir: number) {
+    const i = COMPOUNDS.findIndex((c) => c.code === compound);
+    const next = (i + dir + COMPOUNDS.length) % COMPOUNDS.length;
+    setCompound(COMPOUNDS[next].code);
+    setStatus("idle");
+    cellRefs.current[next]?.focus();
+  }
 
   const caliper = useMemo(() => CALIPERS[caliperIdx] ?? CALIPERS[0], [caliperIdx]);
   const price = caliper?.prices[compound];
   const compoundMeta = COMPOUNDS.find((c) => c.code === compound);
   const [lo, hi] = compoundMeta ? parseTemp(compoundMeta.temp) : [T_MIN, T_MAX];
   const part = `LP-${caliper?.id}-${compound.replace("/", "")}`;
+
+  // Resolve the current (compound, caliper) selection to its live Wix variant.
+  const entry = catalog[compound];
+  const variantId = caliper ? entry?.variants[caliperLabel(caliper)] : undefined;
+  const canBuy = Boolean(entry?.productId && variantId);
+
+  async function handleAdd() {
+    if (!canBuy || !entry || !variantId) return;
+    setStatus("adding");
+    try {
+      const { cart } = await currentCart.addToCurrentCart({
+        lineItems: [
+          {
+            catalogReference: {
+              appId,
+              catalogItemId: entry.productId,
+              options: { variantId },
+            },
+            quantity: 1,
+          },
+        ],
+      });
+      window.dispatchEvent(new CustomEvent("cart-updated", { detail: { cart } }));
+      setStatus("added");
+      setTimeout(() => setStatus("idle"), 2500);
+    } catch (err) {
+      console.error("[cart] add failed:", err);
+      setStatus("error");
+    }
+  }
 
   return (
     <div className="lava-studio-cfg">
@@ -76,21 +127,35 @@ export default function ConfiguratorStudio({
         </header>
 
         <div className="cfg-step">
-          <span className="cfg-label"><i>01</i> Compound</span>
-          <div className="cfg-cells" role="tablist" aria-label="Compound">
-            {COMPOUNDS.map((c) => (
+          <span className="cfg-label" id="cfg-compound-label"><i>01</i> Compound</span>
+          <div
+            className="cfg-cells"
+            role="radiogroup"
+            aria-labelledby="cfg-compound-label"
+            onKeyDown={(e) => {
+              const dir = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1
+                : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
+              if (dir) { e.preventDefault(); moveCompound(dir); }
+            }}
+          >
+            {COMPOUNDS.map((c, i) => {
+              const on = compound === c.code;
+              return (
               <button
                 key={c.code}
+                ref={(el) => { cellRefs.current[i] = el; }}
                 type="button"
-                role="tab"
-                aria-selected={compound === c.code}
-                className={`cfg-cell${compound === c.code ? " on" : ""}`}
-                onClick={() => { setCompound(c.code); setAdded(false); }}
+                role="radio"
+                aria-checked={on}
+                tabIndex={on ? 0 : -1}
+                className={`cfg-cell${on ? " on" : ""}`}
+                onClick={() => { setCompound(c.code); setStatus("idle"); }}
               >
                 <span className="cfg-cell-code">{c.code}</span>
                 <span className="cfg-cell-name">{c.name}</span>
               </button>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -118,11 +183,11 @@ export default function ConfiguratorStudio({
               className="cfg-select"
               value={caliperIdx}
               aria-label="Caliper fitment"
-              onChange={(e) => { setCaliperIdx(Number(e.target.value)); setAdded(false); }}
+              onChange={(e) => { setCaliperIdx(Number(e.target.value)); setStatus("idle"); }}
             >
               {CALIPERS.map((c, i) => (
                 <option key={i} value={i}>
-                  {c.name}{c.position ? ` — ${c.position}` : ""} · #{c.id}
+                  {caliperLabel(c)}
                 </option>
               ))}
             </select>
@@ -138,30 +203,46 @@ export default function ConfiguratorStudio({
           </div>
           <button
             type="button"
-            className={`cfg-add${added ? " done" : ""}`}
-            onClick={() => setAdded(true)}
+            className={`cfg-add${status === "added" ? " done" : ""}`}
+            onClick={handleAdd}
+            disabled={!canBuy || status === "adding"}
           >
-            {added ? "Added to set ✓" : "Add to set"}
+            {!canBuy
+              ? "Unavailable"
+              : status === "adding"
+                ? "Adding…"
+                : status === "added"
+                  ? "Added to set ✓"
+                  : "Add to set"}
           </button>
         </footer>
+        {status === "error" && (
+          <p className="cfg-err" role="alert">Couldn’t add to cart — please try again.</p>
+        )}
         </div>
       </div>
 
-      <style>{`
+      {/* dangerouslySetInnerHTML: without it Astro's SSR HTML-escapes the quotes
+          in the CSS (font-family:&quot;…&quot;), which mismatches the client and
+          forces a full hydration replace. Raw injection keeps server === client. */}
+      <style dangerouslySetInnerHTML={{ __html: `
         .lava-studio-cfg{
           --base:#100E0B; --surface:#17130E; --raised:#1F1A13; --raised-2:#282117;
           --hairline:#2A241B; --hairline-strong:#3A3225; --paper:#F4EDE0; --muted:#A69C88;
           --faint:#6E6656; --accent:#E5451D; --accent-hi:#F1521F; --accent-ink:#120D08;
           --thermal:${THERMAL};
           --mono:"JetBrains Mono",ui-monospace,monospace;
-          --text:"Switzer",system-ui,sans-serif; --display:"Clash Display","Switzer",sans-serif;
+          /* Neutral system defaults — consumers override --text/--display with their
+             brand face (index.astro sets Montserrat). Avoids referencing unloaded fonts. */
+          --text:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+          --display:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
           --ease:cubic-bezier(.2,0,0,1);
           font-family:var(--text); color:var(--paper); width:100%;
         }
         .lava-studio-cfg *{ box-sizing:border-box; }
         .cfg-frame{
           position:relative; background:var(--raised); border:1px solid var(--hairline);
-          border-radius:8px; overflow:hidden;
+          border-radius:12px; overflow:hidden;
           display:grid; grid-template-columns:minmax(300px,42%) 1fr; align-items:stretch;
         }
         .cfg-x{ position:absolute; z-index:2; color:var(--hairline-strong); font-family:var(--mono);
@@ -220,7 +301,7 @@ export default function ConfiguratorStudio({
         .cfg-select-wrap{ position:relative; }
         .cfg-select{ width:100%; appearance:none; -webkit-appearance:none;
           background:var(--surface); color:var(--paper); border:1px solid var(--hairline);
-          border-radius:4px; padding:13px 40px 13px 14px; font-size:15px; font-family:var(--text);
+          border-radius:6px; padding:13px 40px 13px 14px; font-size:15px; font-family:var(--text);
           cursor:pointer; transition:border-color 120ms var(--ease), box-shadow 120ms var(--ease); }
         .cfg-select:focus{ outline:none; border-color:var(--paper); box-shadow:0 0 0 3px rgba(244,237,224,.14); }
         .cfg-caret{ position:absolute; right:14px; top:50%; transform:translateY(-50%);
@@ -235,11 +316,14 @@ export default function ConfiguratorStudio({
         .cfg-amt i{ font-style:normal; font-family:var(--mono); font-size:17px; font-weight:400;
           color:var(--muted); margin-left:6px; }
         .cfg-meta{ display:block; margin-top:10px; font-family:var(--mono); font-size:12px; color:var(--faint); }
-        .cfg-add{ background:var(--accent); color:var(--accent-ink); border:none; border-radius:4px;
+        .cfg-add{ background:var(--accent); color:var(--accent-ink); border:none; border-radius:6px;
           padding:15px 26px; font-family:var(--text); font-size:14px; font-weight:600; letter-spacing:.01em;
           cursor:pointer; white-space:nowrap; transition:background 120ms var(--ease), transform 120ms var(--ease); }
-        .cfg-add:hover{ background:var(--accent-hi); transform:translateY(-1px); }
+        .cfg-add:hover{ background:var(--accent-hi); transform:translateY(-2px); }
         .cfg-add.done{ background:transparent; color:var(--paper); border:1px solid var(--hairline-strong); }
+        .cfg-add:disabled{ cursor:default; opacity:.55; transform:none; }
+        .cfg-add.done:disabled{ opacity:1; }
+        .cfg-err{ margin:14px 0 0; font-family:var(--mono); font-size:12px; color:var(--accent-hi); }
 
         @media (max-width:760px){
           .cfg-frame{ grid-template-columns:1fr; }
@@ -256,7 +340,7 @@ export default function ConfiguratorStudio({
         @media (prefers-reduced-motion:reduce){
           .lava-studio-cfg *{ transition:none !important; }
         }
-      `}</style>
+      ` }} />
     </div>
   );
 }

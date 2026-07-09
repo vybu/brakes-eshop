@@ -1,6 +1,7 @@
 // AUTO-GENERATED from model-pricing.csv (.context/emit-data.py). Do not edit by hand.
 // Domain: a pad "model" is a COMPOUND (MK→TWe); the "shape" is the CALIPER fitment.
-// Price = f(caliper, compound), in PLN (zł). TW and TWe prices are derived from the
+// Price = f(caliper, compound); amounts come from model-pricing.csv and are sold and
+// displayed in EUR (€) — the store's base currency. TW and TWe prices are derived from the
 // listed MK/SR/TW-2 columns (TW = midpoint of SR..TW/2; TWe = TW/2 + endurance premium).
 
 export type CompoundCode = "MK" | "SR" | "TW" | "TW/2" | "TWe";
@@ -409,7 +410,7 @@ export const CALIPERS: Caliper[] = [
   }
 ];
 
-export const CURRENCY = "zł";
+export const CURRENCY = "€";
 
 // Cheapest MK across the range — the "from" price hook.
 export const FROM_PRICE = Math.min(...CALIPERS.map((c) => c.prices.MK));
@@ -418,3 +419,21 @@ export function priceFor(caliperId: string, compound: CompoundCode): number | nu
   const c = CALIPERS.find((x) => x.id === caliperId);
   return c ? c.prices[compound] : null;
 }
+
+// Canonical, unique label for one caliper fitment. Used verbatim as the Wix
+// variant choice name (see .context/seed.mjs) AND as the key that maps a
+// configurator selection back to its Wix variantId — so the exact string must
+// match on both sides. Unique across all fitments (name disambiguates shared
+// ids, position disambiguates same-name front/rear pairs).
+export function caliperLabel(c: Pick<Caliper, "name" | "position" | "id">): string {
+  return `${c.name} · ${c.position ?? "Universal"} · #${c.id}`;
+}
+
+// Each compound is one Wix product; the caliper fitment is its variant option.
+export const COMPOUND_SLUGS: Record<CompoundCode, string> = {
+  MK: "lava-mk",
+  SR: "lava-sr",
+  TW: "lava-tw",
+  "TW/2": "lava-tw-2",
+  TWe: "lava-twe",
+};
