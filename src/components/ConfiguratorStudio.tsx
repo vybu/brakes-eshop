@@ -379,7 +379,7 @@ export default function ConfiguratorStudio({
         .cfg-ledger{ background:var(--surface); border:1px solid var(--hairline);
           border-radius:6px; overflow:hidden; }
         .cfg-ledger-head{ display:grid; grid-template-columns:60px 1.1fr 2fr 88px; gap:16px;
-          padding:10px 18px; font-family:var(--mono); font-size:10.5px; letter-spacing:.12em;
+          padding:10px 18px; font-family:var(--mono); font-size:11px; letter-spacing:.12em;
           text-transform:uppercase; color:var(--faint); background:var(--base);
           border-bottom:1px solid var(--hairline); }
         .cfg-ledger-head span:last-child{ text-align:right; }
@@ -393,11 +393,11 @@ export default function ConfiguratorStudio({
         .cfg-lrow.on::before{ content:""; position:absolute; left:0; top:0; bottom:0;
           width:3px; background:var(--accent); }
         .cfg-lrow:focus-visible{ outline:none; box-shadow:inset 0 0 0 2px var(--paper); }
-        .cfg-lrow-code{ font-family:var(--mono); font-weight:500; font-size:15px;
+        .cfg-lrow-code{ font-family:var(--mono); font-weight:500; font-size:16px;
           letter-spacing:.02em; color:var(--muted); }
         .cfg-lrow.on .cfg-lrow-code{ color:var(--accent-hi); }
-        .cfg-lrow-name{ font-size:14px; color:var(--paper); }
-        .cfg-lrow-name em{ display:block; font-style:normal; font-size:11.5px; color:var(--faint); margin-top:3px; }
+        .cfg-lrow-name{ font-size:15px; color:var(--paper); }
+        .cfg-lrow-name em{ display:block; font-style:normal; font-size:12.5px; color:var(--faint); margin-top:3px; }
         .cfg-lrow-bar{ position:relative; height:8px; }
         .cfg-lrow-track{ position:absolute; inset:0; border-radius:2px; background:var(--base);
           border:1px solid var(--hairline); }
@@ -409,14 +409,14 @@ export default function ConfiguratorStudio({
         .cfg-lrow.on .cfg-lrow-hi{ color:var(--paper); }
         .cfg-lrow-price{ text-align:right; font-family:var(--mono); font-size:16px; font-weight:500; color:var(--paper); }
         .cfg-lrow-price i{ font-style:normal; font-size:12px; color:var(--muted); margin-left:2px; }
-        .cfg-ledger-note{ margin:14px 0 0; font-size:13px; color:var(--muted); }
+        .cfg-ledger-note{ margin:14px 0 0; font-size:14px; color:var(--muted); }
         .cfg-ledger-note b{ color:var(--paper); font-weight:600; }
         .cfg-ledger-note em{ font-style:normal; font-family:var(--mono); color:var(--paper); }
 
         .cfg-select-wrap{ position:relative; }
         .cfg-select{ width:100%; appearance:none; -webkit-appearance:none;
           background:var(--surface); color:var(--paper); border:1px solid var(--hairline);
-          border-radius:6px; padding:13px 40px 13px 14px; font-size:15px; font-family:var(--text);
+          border-radius:6px; padding:13px 40px 13px 14px; font-size:16px; font-family:var(--text);
           cursor:pointer; transition:border-color 120ms var(--ease), box-shadow 120ms var(--ease); }
         .cfg-select:focus{ outline:none; border-color:var(--paper); box-shadow:0 0 0 3px rgba(244,237,224,.14); }
         .cfg-caret{ position:absolute; right:14px; top:50%; transform:translateY(-50%);
@@ -432,7 +432,7 @@ export default function ConfiguratorStudio({
         .cfg-axle-cell:hover:not(:disabled):not(.on){ border-color:var(--hairline-strong); color:var(--paper); }
         .cfg-axle-cell.on{ border-color:var(--accent); background:var(--raised-2); color:var(--paper); }
         .cfg-axle-cell:disabled{ opacity:.4; cursor:default; }
-        .cfg-axle-label{ font-size:14px; font-weight:500; }
+        .cfg-axle-label{ font-size:15px; font-weight:500; }
         .cfg-axle-price{ font-family:var(--mono); font-size:12px; color:var(--faint); }
         .cfg-axle-cell.on .cfg-axle-price{ color:var(--accent-hi); }
 
