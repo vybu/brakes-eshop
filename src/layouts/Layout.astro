@@ -1,0 +1,29 @@
+---
+import CartButton from "../components/CartButton.tsx";
+import "../styles/global.css";
+interface Props { title?: string }
+const { title = "Brake Pads Co." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="/" class="brand">Brake Pads Co.</a>
+        <CartButton client:load />
+      </div>
+    </header>
+
+    <main><slot /></main>
+
+    <footer class="site-footer">Brake Pads Co. — scaffold</footer>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ProductCard from "../components/ProductCard.astro";
+import { listPads } from "../lib/products";
+
+const pads = await listPads();
+---
+
+<Layout title="Brake Pads Co. — Premium brake pads">
+  <section class="hero container">
+    <h1>Brake pads, done right.</h1>
+    <p>
+      Pick your pad model, choose the fitment that matches your caliper, and stop with
+      confidence. No sprawling catalog — just pads we stand behind.
+    </p>
+  </section>
+
+  <section class="container section">
+    <h2 class="section-title">Our pad models</h2>
+    {pads.length === 0 ? (
+      <p class="empty">No products found. Seed the catalog, then refresh.</p>
+    ) : (
+      <div class="grid">
+        {pads.map((pad) => <ProductCard pad={pad} />)}
+      </div>
+    )}
+  </section>
+</Layout>
