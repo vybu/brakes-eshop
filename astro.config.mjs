@@ -9,6 +9,8 @@ const isBuild = process.env.NODE_ENV == "production";
 
 // https://astro.build/config
 export default defineConfig({
+  // Canonical/OG absolute URLs derive from this. Update to the live domain at launch.
+  site: "https://www.lavabrakes.com",
   integrations: [wix(), wixPages(), react()],
   security: { checkOrigin: false },
   ...(isBuild && { adapter: cloudProviderFetchAdapter({}) }),
