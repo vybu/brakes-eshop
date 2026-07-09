@@ -1,0 +1,170 @@
+---
+// Variant A — "Thermal": cinematic, dark, heat-gradient forward. Big condensed
+// display type. Static design mock (not wired to catalog/cart).
+const compounds = [
+  { code: "MK", name: "Fast Road", blurb: "Confident cold bite, quiet, low dust. Your daily-driven weapon." },
+  { code: "SR", name: "Sport", blurb: "Spirited roads and the odd track day. More heat, more hold." },
+  { code: "TW", name: "Trackday", blurb: "Built for lapping. High thermal ceiling, consistent pedal." },
+  { code: "TW/2", name: "Race", blurb: "Endurance-grade friction for the hardest stops on the grid." },
+  { code: "TWe", name: "Endurance", blurb: "Our lowest-wear compound. Kind to discs, brutal on lap times." },
+];
+const fitments = [
+  "Impreza STI", "Civic FK8", "Lancer EVO", "Mégane RS", "Audi RS3", "Porsche 18mm",
+  "Nissan GTR (Brembo)", "Mustang", "BMW M2", "Yaris GR", "Supra GR", "MX-5 BBK", "AP Racing R5",
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>LAVA — Molten performance (Variant A · Thermal)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="tag">Variant A · Thermal</div>
+
+    <header class="nav">
+      <img src="/brand/logo.png" alt="LAVA" class="logo" />
+      <nav>
+        <a href="#lineup">Lineup</a>
+        <a href="#fit">Fitment</a>
+        <a href="#why">Why LAVA</a>
+        <a href="#" class="cta-sm">Shop</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="heatlines" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <p class="eyebrow">Performance brake pads · Made in Poland</p>
+        <h1>MOLTEN<br />PERFORMANCE.</h1>
+        <p class="lede">
+          Track-grade friction engineered to fit your caliper exactly — and priced at
+          roughly half of Ferodo and EBC. Pick a compound, pick your car, brake harder.
+        </p>
+        <div class="hero-actions">
+          <a href="#lineup" class="btn">Explore the compounds</a>
+          <span class="from">from <strong>600 zł</strong> / set</span>
+        </div>
+      </div>
+      <img src="/brand/photo-2.png" alt="LAVA brake pad" class="hero-pad" />
+    </section>
+
+    <section id="lineup" class="lineup">
+      <div class="section-head">
+        <h2>One pad. Five states of matter.</h2>
+        <p>From street heat to endurance racing — the same precise fit, a hotter compound.</p>
+      </div>
+      <div class="scale">
+        {compounds.map((c, i) => (
+          <article class="tier" style={`--i:${i}`}>
+            <span class="tier-code">{c.code}</span>
+            <span class="tier-name">{c.name}</span>
+            <p>{c.blurb}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="fit" class="fit">
+      <div class="fit-copy">
+        <h2>Built for the calipers that matter.</h2>
+        <p>
+          Direct-fit sets for 30+ performance and OEM big-brake applications — Brembo,
+          AP Racing and the calipers your platform actually runs.
+        </p>
+        <a href="#" class="btn ghost">Find your fitment</a>
+      </div>
+      <div class="chips">
+        {fitments.map((f) => <span class="chip">{f}</span>)}
+        <span class="chip more">+ more</span>
+      </div>
+    </section>
+
+    <section id="why" class="why">
+      <div class="why-media"><img src="/brand/photo-1.png" alt="CAD fitment of a LAVA pad in a Brembo caliper" /></div>
+      <div class="why-copy">
+        <h2>Engineered to the millimetre.</h2>
+        <ul>
+          <li><strong>Exact fit.</strong> Every backing plate is modelled to the caliper — no filing, no rattle.</li>
+          <li><strong>Half the price.</strong> LAVA MK from 600 zł where Ferodo DS2500 starts at 1169 zł.</li>
+          <li><strong>Proven wear.</strong> TWe outlasts the field and barely touches your discs.</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <img src="/brand/logo.png" alt="LAVA" class="foot-logo" />
+      <p>LAVA · Molten performance · Made in Poland</p>
+    </footer>
+
+    <style>
+      :root {
+        --black: #0b0b0d; --red: #E43B1B; --orange: #EE7B2E; --amber: #F2A85E; --cream: #F9EFD5;
+        --grad: linear-gradient(90deg, #E43B1B, #EE7B2E, #F2A85E, #F9EFD5);
+      }
+      * { box-sizing: border-box; margin: 0; }
+      body { background: var(--black); color: var(--cream); font-family: Inter, system-ui, sans-serif; overflow-x: hidden; }
+      h1, h2 { font-family: Anton, Impact, sans-serif; font-weight: 400; letter-spacing: 0.01em; line-height: 0.95; text-transform: uppercase; }
+      a { color: inherit; text-decoration: none; }
+      .tag { position: fixed; bottom: 12px; left: 12px; z-index: 50; font-size: 11px; letter-spacing: 0.08em; background: var(--red); color: #fff; padding: 4px 10px; border-radius: 100px; opacity: .85; }
+
+      .nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 6vw; }
+      .logo { height: 26px; }
+      .nav nav { display: flex; gap: 30px; align-items: center; font-size: 14px; }
+      .nav nav a { color: #b9b4a8; transition: color .2s; }
+      .nav nav a:hover { color: var(--cream); }
+      .cta-sm { background: var(--grad); color: #1a0d05 !important; font-weight: 600; padding: 8px 16px; border-radius: 100px; }
+
+      .hero { position: relative; padding: 7vh 6vw 12vh; min-height: 82vh; display: flex; align-items: center; }
+      .heatlines { position: absolute; inset: 0; background:
+        repeating-linear-gradient(0deg, transparent 0 38px, rgba(238,123,46,.04) 38px 39px);
+        mask-image: radial-gradient(120% 90% at 70% 40%, #000 30%, transparent 75%); pointer-events: none; }
+      .hero-inner { position: relative; max-width: 720px; z-index: 2; }
+      .eyebrow { color: var(--orange); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 22px; }
+      h1 { font-size: clamp(44px, 7.5vw, 108px); width: fit-content; padding-right: 0.08em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .lede { margin: 28px 0 0; font-size: clamp(16px, 2vw, 20px); color: #cfc9bb; max-width: 34em; }
+      .hero-actions { margin-top: 38px; display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
+      .btn { background: var(--grad); color: #1a0d05; font-weight: 600; padding: 15px 28px; border-radius: 100px; font-size: 15px; transition: transform .2s, filter .2s; }
+      .btn:hover { transform: translateY(-2px); filter: brightness(1.06); }
+      .btn.ghost { background: transparent; color: var(--cream); border: 1px solid #4a453c; }
+      .from { color: #a49e91; font-size: 15px; }
+      .from strong { color: var(--cream); }
+      .hero-pad { position: absolute; right: -2vw; bottom: -6vh; width: min(44vw, 600px); filter: drop-shadow(0 40px 80px rgba(228,59,27,.25)); opacity: .95; z-index: 1; border-radius: 20px; }
+
+      section { padding: 10vh 6vw; }
+      .section-head { max-width: 760px; margin-bottom: 54px; }
+      h2 { font-size: clamp(32px, 5vw, 62px); }
+      .section-head p { margin-top: 16px; color: #a49e91; font-size: 18px; }
+
+      .scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; border-radius: 16px; overflow: hidden; }
+      .tier { background: #141416; padding: 34px 24px 40px; border-top: 4px solid; border-image: var(--grad) 1; position: relative; min-height: 260px; display: flex; flex-direction: column; }
+      .tier::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+        background: hsl(calc(24 - var(--i) * 5), 88%, calc(52% + var(--i) * 7%)); }
+      .tier-code { font-family: Anton, sans-serif; font-size: 40px; letter-spacing: 0.02em; }
+      .tier-name { color: var(--orange); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; margin: 6px 0 18px; }
+      .tier p { color: #9d978a; font-size: 14px; line-height: 1.5; }
+      @media (max-width: 860px) { .scale { grid-template-columns: 1fr 1fr; } .hero-pad { display: none; } }
+
+      .fit { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; background: #141416; }
+      .fit-copy p { color: #a49e91; margin: 18px 0 30px; font-size: 18px; }
+      .chips { display: flex; flex-wrap: wrap; gap: 12px; }
+      .chip { border: 1px solid #35322c; padding: 10px 16px; border-radius: 100px; font-size: 14px; color: #cfc9bb; }
+      .chip.more { background: var(--grad); color: #1a0d05; border: none; font-weight: 600; }
+
+      .why { display: grid; grid-template-columns: 1.1fr 1fr; gap: 60px; align-items: center; }
+      .why-media img { width: 100%; border-radius: 16px; }
+      .why-copy ul { list-style: none; margin-top: 26px; display: flex; flex-direction: column; gap: 20px; }
+      .why-copy li { color: #a49e91; font-size: 17px; padding-left: 20px; border-left: 3px solid; border-image: var(--grad) 1; }
+      .why-copy li strong { color: var(--cream); }
+      @media (max-width: 860px) { .fit, .why { grid-template-columns: 1fr; } }
+
+      .foot { text-align: center; padding: 8vh 6vw; border-top: 1px solid #1e1e20; }
+      .foot-logo { height: 22px; margin-bottom: 16px; }
+      .foot p { color: #6f6a60; font-size: 13px; letter-spacing: 0.08em; }
+    </style>
+  </body>
+</html>

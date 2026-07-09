@@ -1,0 +1,147 @@
+---
+// Variant C — "Editorial": calm, premium, gallery-like. Serif display, generous
+// black space, thermal gradient as a restrained accent. Static design mock.
+const compounds = [
+  { n: "01", code: "MK", name: "Fast Road", note: "Quiet, low-dust, confident from cold." },
+  { n: "02", code: "SR", name: "Sport", note: "For spirited roads and the occasional lap." },
+  { n: "03", code: "TW", name: "Trackday", note: "A high thermal ceiling that holds all session." },
+  { n: "04", code: "TW/2", name: "Race", note: "Endurance-grade bite for the hardest stops." },
+  { n: "05", code: "TWe", name: "Endurance", note: "The lowest wear we make. Kind to your discs." },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>LAVA — (Variant C · Editorial)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="tag">Variant C · Editorial</div>
+
+    <header class="nav">
+      <img src="/brand/logo.png" alt="LAVA" class="logo" />
+      <div class="nav-right">
+        <span class="madein">Made in Poland</span>
+        <a href="#">Shop</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">Performance brake pads</p>
+      <h1>Heat is the<br /><em>whole point.</em></h1>
+      <p class="lede">
+        LAVA makes competition brake pads for the calipers enthusiasts actually run —
+        engineered to fit exactly, priced at about half of Ferodo and EBC.
+      </p>
+      <figure class="hero-figure">
+        <img src="/brand/photo-2.png" alt="A LAVA brake pad" />
+        <figcaption>The TWe compound — laser-etched, matte, ready to work.</figcaption>
+      </figure>
+    </section>
+
+    <div class="rule"></div>
+
+    <section class="lineup">
+      <div class="lineup-intro">
+        <h2>Five compounds.<br />One precise fit.</h2>
+        <p>Choose by how hard you drive. The pad shape is matched to your caliper — that part you never have to think about.</p>
+      </div>
+      <ol class="tiers">
+        {compounds.map((c) => (
+          <li>
+            <span class="t-n">{c.n}</span>
+            <div class="t-main">
+              <span class="t-code">{c.code}</span>
+              <span class="t-name">{c.name}</span>
+            </div>
+            <p class="t-note">{c.note}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="statement">
+      <p>“Track-grade friction shouldn’t cost a track-day budget.”</p>
+      <span>LAVA MK from <strong>600 zł</strong> — where Ferodo DS2500 starts near 1&thinsp;169 zł.</span>
+    </section>
+
+    <section class="fit">
+      <figure><img src="/brand/photo-1.png" alt="CAD model of a LAVA pad in a caliper" /></figure>
+      <div class="fit-copy">
+        <h2>Drawn to the millimetre.</h2>
+        <p>
+          Every backing plate begins as a CAD model of your exact caliper. The result is a
+          drop-in fit for 30+ applications — Brembo, AP Racing, and the OEM big-brake kits on
+          Impreza STI, EVO, M2, Yaris GR, Supra and more.
+        </p>
+        <a href="#" class="link">Find your fitment →</a>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <img src="/brand/logo.png" alt="LAVA" />
+      <p>Molten performance · Made in Poland</p>
+    </footer>
+
+    <style>
+      :root { --black:#0c0c0e; --cream:#F4EEE1; --muted:#8b8578; --red:#E43B1B; --amber:#F2A85E; --grad:linear-gradient(90deg,#E43B1B,#EE7B2E,#F2A85E,#F9EFD5); }
+      * { box-sizing: border-box; margin: 0; }
+      body { background: var(--black); color: var(--cream); font-family: Inter, system-ui, sans-serif; line-height: 1.5; }
+      a { color: inherit; }
+      h1, h2, .t-code, .statement p { font-family: Fraunces, Georgia, serif; font-weight: 300; }
+      .tag { position: fixed; bottom: 12px; left: 12px; z-index: 50; font-size: 11px; letter-spacing:.08em; background: var(--red); color:#fff; padding: 4px 10px; border-radius: 100px; opacity: .85; }
+
+      .nav { display: flex; align-items: center; justify-content: space-between; padding: 30px 8vw; }
+      .logo { height: 22px; }
+      .nav-right { display: flex; align-items: center; gap: 26px; font-size: 14px; }
+      .madein { color: var(--muted); }
+      .nav-right a { text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+
+      .hero { padding: 9vh 8vw 4vh; text-align: center; }
+      .eyebrow { color: var(--amber); font-size: 13px; letter-spacing: .22em; text-transform: uppercase; }
+      h1 { font-size: clamp(48px, 9vw, 116px); line-height: 1.0; margin: 26px 0 0; letter-spacing: -0.02em; }
+      h1 em { font-style: italic; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      .lede { max-width: 52ch; margin: 30px auto 0; color: #c3bdb0; font-size: clamp(16px,1.9vw,20px); }
+      .hero-figure { margin: 7vh auto 0; max-width: 620px; }
+      .hero-figure img { width: 100%; border-radius: 14px; }
+      figcaption { margin-top: 16px; color: var(--muted); font-size: 13px; letter-spacing: .02em; }
+
+      .rule { height: 2px; margin: 4vh 8vw; background: var(--grad); opacity: .8; }
+
+      .lineup { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 60px; padding: 6vh 8vw; align-items: start; }
+      .lineup-intro { position: sticky; top: 40px; }
+      h2 { font-size: clamp(30px, 4.5vw, 54px); line-height: 1.05; letter-spacing: -0.01em; }
+      .lineup-intro p { margin-top: 22px; color: var(--muted); font-size: 17px; max-width: 34ch; }
+      .tiers { list-style: none; margin: 0; padding: 0; }
+      .tiers li { display: grid; grid-template-columns: 48px 1fr; gap: 20px 24px; padding: 28px 0; border-top: 1px solid #222; align-items: baseline; transition: padding-left .25s; }
+      .tiers li:hover { padding-left: 12px; }
+      .tiers li:last-child { border-bottom: 1px solid #222; }
+      .t-n { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+      .t-main { display: flex; align-items: baseline; gap: 16px; }
+      .t-code { font-size: 34px; }
+      .t-name { color: var(--amber); font-size: 13px; letter-spacing: .16em; text-transform: uppercase; }
+      .t-note { grid-column: 2; color: #b7b1a4; font-size: 15px; }
+      @media (max-width: 820px){ .lineup { grid-template-columns: 1fr; } .lineup-intro { position: static; } }
+
+      .statement { text-align: center; padding: 12vh 8vw; }
+      .statement p { font-size: clamp(26px, 4.5vw, 52px); font-style: italic; max-width: 20ch; margin: 0 auto; line-height: 1.15; }
+      .statement span { display: block; margin-top: 28px; color: var(--muted); font-size: 16px; }
+      .statement strong { color: var(--cream); font-weight: 500; }
+
+      .fit { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; padding: 6vh 8vw 12vh; }
+      .fit figure { margin: 0; }
+      .fit img { width: 100%; border-radius: 14px; }
+      .fit-copy p { margin: 22px 0 28px; color: #b7b1a4; font-size: 18px; }
+      .link { text-decoration: none; border-bottom: 1px solid var(--amber); color: var(--amber); padding-bottom: 3px; font-size: 15px; }
+      @media (max-width: 820px){ .fit { grid-template-columns: 1fr; } }
+
+      .foot { text-align: center; padding: 8vh 8vw; border-top: 1px solid #1c1c1e; }
+      .foot img { height: 20px; margin-bottom: 14px; }
+      .foot p { color: #6f6a60; font-size: 13px; letter-spacing: .06em; }
+    </style>
+  </body>
+</html>

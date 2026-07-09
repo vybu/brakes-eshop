@@ -1,0 +1,505 @@
+---
+// LAVA — "Apex" landing/shop, modelled on vitourmotorsport.eu's structure but on
+// the LAVA brand: Montserrat throughout, warm near-black panels over a warm light
+// page, and molten-orange (#E5451D) accent used with RESTRAINT — reserved for the
+// primary CTAs, the hero wedge, the LAVA price bar, and the tab underline; every
+// other surface (nav, cards, badges, eyebrows, avatars) stays neutral. A two-tone
+// uppercase hero over a grid + orange diagonal wedge with a floating product, a
+// product-image compound carousel, feature tabs, a light proof + testimonial block,
+// and a dark newsletter-style CTA panel over a track image.
+// LAVA-unique: the thermal gradient survives ONLY on the temperature scales.
+import ConfiguratorStudio from "../../components/ConfiguratorStudio.tsx";
+import { COMPOUNDS, CALIPERS, FROM_PRICE } from "../../lib/lava-data";
+
+const T_MIN = 20;
+const T_MAX = 850;
+const tPct = (v: number): number => ((v - T_MIN) / (T_MAX - T_MIN)) * 100;
+const tRange = (t: string): [number, number] => {
+  const n = t.replace(/[^\d–-]/g, "").split(/[–-]/).map((x) => parseInt(x, 10));
+  return [n[0] ?? T_MIN, n[1] ?? T_MAX];
+};
+
+// Per-compound consumer label + a distinct product image (one per compound).
+const APEX_COMPOUND_IMAGES = {
+  MK: "/apex/compound-mk.png",
+  SR: "/apex/compound-sr.png",
+  TW: "/apex/compound-tw.png",
+  "TW/2": "/apex/compound-tw2.png",
+  TWe: "/apex/compound-twe.png",
+};
+
+const CARD: Record<string, { tier: string; img: string; isNew?: boolean }> = {
+  MK: { tier: "Street", img: APEX_COMPOUND_IMAGES.MK },
+  SR: { tier: "Sport", img: APEX_COMPOUND_IMAGES.SR },
+  TW: { tier: "Trackday", img: APEX_COMPOUND_IMAGES.TW },
+  "TW/2": { tier: "Race", img: APEX_COMPOUND_IMAGES["TW/2"], isNew: true },
+  TWe: { tier: "Endurance", img: APEX_COMPOUND_IMAGES.TWe, isNew: true },
+};
+
+const compare = [
+  { fit: "Impreza STI / Civic FK8", part: "LP-101", lava: 600, rival: 1169, brand: "Ferodo DS2500" },
+  { fit: "Nissan GTR · Brembo", part: "LP-106", lava: 800, rival: 1333, brand: "Ferodo DS1.11" },
+  { fit: "Audi RS3 / RS5", part: "LP-103", lava: 700, rival: 1662, brand: "Ferodo DS2500" },
+  { fit: "BMW M2 · Front", part: "LP-112", lava: 700, rival: 1290, brand: "EBC Bluestuff" },
+];
+
+const features = [
+  { key: "fit", tab: "Exact fit", head: "Modelled to your caliper, not filed to it", body: "Every backing plate is drawn to the caliper it serves — drop-in, no shims, no rattle, no rework in the pit lane.", img: "/gen2/caliper.jpg" },
+  { key: "heat", tab: "Thermal range", head: "One calibrated scale, street to endurance", body: "Five compounds spanning 20–850 °C. Each is defined by the window it holds — read the bracket, not the marketing.", img: "/gen2/disc-topdown.jpg" },
+  { key: "wear", tab: "Proven wear", head: "TWe marks the disc by 0.001 mm a session", body: "Our endurance compound records the lowest wear in the range and is kind to the disc it rides — measured, not claimed.", img: "/gen2/compound-macro.jpg" },
+  { key: "value", tab: "Honest value", head: "Same friction class, half the invoice", body: "Every compound is placed against a named Ferodo or EBC tier, then priced at roughly half. The comparison is the spec.", img: "/gen2/pad-detail.jpg" },
+];
+
+const testimonials = [
+  { q: "Confident from cold on the road, then holds every braking zone once the disc is up to temperature. First set that did both.", who: "M. Kowalski", role: "Time-attack · Civic FK8" },
+  { q: "Swapped a set that cost twice as much. Same bite, no fade over a 20-minute session. I'm not paying Ferodo money again.", who: "T. Nowak", role: "Track-day · BMW M2" },
+  { q: "Drop-in fit, no filing, no shims. Pit stop was a 90-second pad change. Exactly what the spec sheet promised.", who: "A. Lewandowska", role: "Endurance · Porsche Cup" },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>LAVA — Track focused, street priced competition brake pads</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="devtag">Apex · Vitour-matched</div>
+
+    <!-- DARK TOP REGION -->
+    <div class="dark-wrap">
+      <header class="nav">
+        <div class="nav-inner">
+          <a href="#top" class="nav-logo" aria-label="LAVA home"><img src="/lava-logo.svg" alt="LAVA" /></a>
+          <span class="nav-badge">Official · Made in Poland</span>
+          <nav class="nav-links">
+            <a href="#compounds">Compounds</a>
+            <a href="#why">Engineering</a>
+            <a href="#proof">Value</a>
+            <a href="#configure" class="btn btn-outline btn-sm">Configure</a>
+          </nav>
+        </div>
+      </header>
+
+      <!-- HERO -->
+      <section class="hero" id="top">
+        <div class="hero-grid" aria-hidden="true"></div>
+        <div class="hero-wedge" aria-hidden="true"></div>
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <span class="eyebrow">Performance brake pads</span>
+            <h1>Track focused<br /><span class="dim">street priced</span></h1>
+            <p class="lede">
+              LAVA competition pads are engineered for track-day, time-attack, and spirited road
+              driving — the friction class of Ferodo and EBC, sold for roughly half.
+            </p>
+            <a href="#configure" class="btn btn-primary btn-lg">Configure your set</a>
+          </div>
+          <figure class="hero-media">
+            <img src="/apex/hero-pad.png" alt="LAVA competition brake pad" />
+            <span class="hero-tag">LP · sintered compound</span>
+          </figure>
+        </div>
+      </section>
+
+      <!-- COMPOUNDS (Vitour "Products") -->
+      <section id="compounds" class="dsection">
+        <div class="dsection-head">
+          <h2>Compounds</h2>
+          <div class="carousel-nav">
+            <button class="cbtn" data-scroll="compounds" data-dir="-1" aria-label="Previous">&#8249;</button>
+            <button class="cbtn" data-scroll="compounds" data-dir="1" aria-label="Next">&#8250;</button>
+          </div>
+        </div>
+        <div class="carousel" id="compounds-track">
+          {COMPOUNDS.map((c) => {
+            const [lo, hi] = tRange(c.temp);
+            const meta = CARD[c.code];
+            return (
+              <article class="pcard">
+                <div class="pcard-media">
+                  {meta.isNew && <span class="pcard-new">New</span>}
+                  <img src={meta.img} alt={`${c.name} compound`} />
+                </div>
+                <div class="pcard-body">
+                  <span class="pcard-tier">{meta.tier} · {c.temp}</span>
+                  <h3>{c.code} · {c.name}</h3>
+                  <p class="pcard-note">{c.note}</p>
+                  <div class="pcard-scale" title={c.temp}>
+                    <div class="pcard-scale-fill" style={`left:${tPct(lo)}%;width:${tPct(hi) - tPct(lo)}%`}></div>
+                  </div>
+                  <a href="#configure" class="btn btn-outline btn-sm pcard-cta">Configure</a>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- WHY / FEATURE TABS -->
+      <section id="why" class="dsection why">
+        <div class="dsection-head col">
+          <span class="eyebrow">Engineering</span>
+          <h2>Built like a spec sheet, sold like a promise.</h2>
+        </div>
+        <div class="why-tabs" role="tablist" aria-label="Engineering features">
+          {features.map((f, i) => (
+            <button class={`why-tab${i === 0 ? " on" : ""}`} role="tab" aria-selected={i === 0 ? "true" : "false"} data-tab={f.key}>{f.tab}</button>
+          ))}
+        </div>
+        <div class="why-panels">
+          {features.map((f, i) => (
+            <div class={`why-panel${i === 0 ? " on" : ""}`} data-panel={f.key}>
+              <div class="why-copy">
+                <h3>{f.head}</h3>
+                <p>{f.body}</p>
+                <a href="#configure" class="btn btn-outline">Configure your set</a>
+              </div>
+              <figure class="why-fig"><img src={f.img} alt={f.head} /></figure>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- CONFIGURATOR — this is the shop -->
+      <section id="configure" class="dsection configure">
+        <div class="cfg-copy">
+          <span class="eyebrow">Build &amp; buy</span>
+          <h2>Configure your set.</h2>
+          <p class="dsub">No SKU matrix to search. Pick a compound, pick your caliper — the price you see is the set that ships.</p>
+        </div>
+        <ConfiguratorStudio client:load heading="Configure your LAVA set" compoundImages={APEX_COMPOUND_IMAGES} />
+      </section>
+    </div>
+
+    <!-- LIGHT BLOCK -->
+    <section id="proof" class="lsection proof">
+      <div class="lsection-head">
+        <span class="eyebrow light">Value, measured</span>
+        <h2>Same friction class. Half the invoice.</h2>
+        <p class="lsub">Price per set in złoty, LAVA against the established brand in the same friction tier. The saving is the number, not the pitch.</p>
+      </div>
+      <div class="bars">
+        {compare.map((r) => {
+          const savePct = Math.round((1 - r.lava / r.rival) * 100);
+          const w = Math.round((r.lava / r.rival) * 100);
+          return (
+            <div class="bar-row">
+              <div class="bar-fit">
+                <span class="bar-name">{r.fit}</span>
+                <span class="bar-part">{r.part} · vs {r.brand}</span>
+              </div>
+              <div class="bar-stack">
+                <div class="bar-track">
+                  <div class="bar bar-lava" style={`width:${w}%`}></div>
+                  <span class="bar-val bar-val-lava">{r.lava} zł · LAVA</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar bar-rival" style="width:100%"></div>
+                  <span class="bar-val bar-val-rival">{r.rival} zł · {r.brand}</span>
+                </div>
+              </div>
+              <span class="bar-save">−{savePct}%</span>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="lsection testi">
+      <div class="lsection-head">
+        <span class="eyebrow light">Drivers who switched</span>
+        <h2>Racers run LAVA.</h2>
+      </div>
+      <div class="testi-grid">
+        {testimonials.map((t) => (
+          <figure class="tcard">
+            <blockquote>“{t.q}”</blockquote>
+            <figcaption>
+              <span class="tcard-mono" aria-hidden="true">{t.who.split(" ").map((w) => w[0]).join("")}</span>
+              <span class="tcard-meta"><b>{t.who}</b><em>{t.role}</em></span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <!-- NEWSLETTER-STYLE CTA (dark panel over track image) -->
+    <section class="cta-wrap">
+      <div class="cta">
+        <h2>Ready for your next session?</h2>
+        <p>Configure a set for your caliper in under a minute — and see exactly what you save.</p>
+        <a href="#configure" class="btn btn-primary btn-lg">Configure your set</a>
+        <span class="cta-from">from {FROM_PRICE} zł / set · {CALIPERS.length} fitments</span>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="foot-inner">
+        <img src="/lava-logo.svg" alt="LAVA" class="foot-logo" />
+        <div class="foot-meta">
+          <span>LAVA · competition brake pads · made in Poland</span>
+          <span>{CALIPERS.length} fitments · 5 compounds · from {FROM_PRICE} zł</span>
+        </div>
+      </div>
+    </footer>
+
+    <script is:inline>
+      document.querySelectorAll(".why-tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const key = tab.getAttribute("data-tab");
+          document.querySelectorAll(".why-tab").forEach((t) => {
+            const on = t === tab;
+            t.classList.toggle("on", on);
+            t.setAttribute("aria-selected", on ? "true" : "false");
+          });
+          document.querySelectorAll(".why-panel").forEach((p) => {
+            p.classList.toggle("on", p.getAttribute("data-panel") === key);
+          });
+        });
+      });
+      document.querySelectorAll(".cbtn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const track = document.getElementById(btn.getAttribute("data-scroll") + "-track");
+          if (!track) return;
+          const dir = Number(btn.getAttribute("data-dir"));
+          const card = track.querySelector(".pcard");
+          const step = card ? card.getBoundingClientRect().width + 20 : 340;
+          track.scrollBy({ left: dir * step, behavior: "smooth" });
+        });
+      });
+    </script>
+
+    <style>
+      :root{
+        --page:#ECEAE4; --ink:#17130E; --ink-dim:rgba(23,19,14,.66); --ink-faint:rgba(23,19,14,.42);
+        --dark:#100E0B; --dark-2:#17130E; --dark-3:#1F1A13;
+        --line-d:rgba(245,237,224,.10); --line-d-2:rgba(245,237,224,.18); --line-l:#D8D2C8;
+        --white:#F4EDE0; --white-dim:rgba(244,237,224,.72); --white-faint:rgba(244,237,224,.5);
+        /* Brand accent — molten orange, used with restraint (CTAs, hero wedge, LAVA bar). */
+        --accent:#E5451D; --accent-hi:#F1521F; --accent-ink:#fff;
+        --thermal:linear-gradient(90deg,#E33D1B 0%,#E9682A 34%,#F1A361 66%,#FCEDCC 100%);
+        --font:"Montserrat",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+        --gutter:clamp(20px,5vw,64px); --section-y:clamp(64px,8vw,120px); --max:1280px;
+        --ease:cubic-bezier(.2,0,0,1); --dur:220ms;
+        --r-card:16px; --r-panel:24px;
+      }
+      *{ box-sizing:border-box; margin:0; padding:0; }
+      html{ scroll-behavior:smooth; }
+      body{ background:var(--page); color:var(--ink); font-family:var(--font);
+        font-size:16px; line-height:1.8; letter-spacing:.3px; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+      a{ color:inherit; text-decoration:none; }
+      img{ display:block; max-width:100%; }
+
+      h1,h2,h3{ font-family:var(--font); font-weight:600; letter-spacing:.4px; line-height:1.1; }
+      h1{ font-size:clamp(2.6rem,5.4vw,3.4rem); text-transform:uppercase; letter-spacing:.6px; }
+      h1 .dim{ color:var(--white-faint); }
+      h2{ font-size:clamp(1.75rem,3.4vw,2.1rem); }
+      h3{ font-size:1.25rem; font-weight:600; }
+      .eyebrow{ display:inline-block; font-size:.78rem; font-weight:500; font-style:italic;
+        letter-spacing:.14em; text-transform:uppercase; color:var(--white-dim);
+        background:var(--dark-3); border-radius:40px; padding:6px 16px; }
+      .eyebrow.light{ color:var(--ink-dim); background:rgba(23,19,14,.06); }
+
+      .devtag{ position:fixed; bottom:16px; left:16px; z-index:80; font-family:var(--mono);
+        font-size:11px; letter-spacing:.04em; background:var(--dark-2); color:var(--white-dim);
+        border:1px solid var(--line-d-2); padding:5px 10px; border-radius:100px; }
+
+      /* buttons — accent pill, reserved for primary CTAs */
+      .btn{ display:inline-flex; align-items:center; justify-content:center; font-family:var(--font);
+        font-weight:500; font-size:.9rem; letter-spacing:1px; border-radius:100px; cursor:pointer;
+        padding:12px 30px; transition:background var(--dur) var(--ease), color var(--dur) var(--ease),
+        transform var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+      .btn-primary{ background:var(--accent); color:var(--accent-ink); border:1px solid var(--accent); }
+      .btn-primary:hover{ background:var(--accent-hi); border-color:var(--accent-hi); transform:translateY(-2px); }
+      .btn-outline{ background:transparent; color:var(--white); border:1px solid var(--line-d-2); }
+      .btn-outline:hover{ border-color:var(--white); }
+      .btn-lg{ padding:15px 36px; font-size:.95rem; }
+      .btn-sm{ padding:9px 22px; font-size:.82rem; }
+
+      /* dark top region */
+      .dark-wrap{ background:var(--dark); color:var(--white);
+        border-radius:0 0 var(--r-panel) var(--r-panel); padding-bottom:var(--section-y); overflow:hidden; }
+
+      /* nav (integrated, transparent over hero) */
+      .nav{ position:relative; z-index:5; }
+      .nav-inner{ max-width:var(--max); margin:0 auto; padding:22px var(--gutter);
+        display:flex; align-items:center; gap:18px; }
+      .nav-logo img{ height:20px; filter:brightness(0) invert(1); }
+      .nav-badge{ font-size:.7rem; letter-spacing:.06em; color:var(--white-dim);
+        border:1px solid var(--line-d-2); border-radius:100px; padding:6px 14px; }
+      .nav-links{ display:flex; align-items:center; gap:30px; margin-left:auto; }
+      .nav-links a:not(.btn){ color:var(--white-dim); font-size:.9rem; font-weight:500;
+        transition:color var(--dur) var(--ease); }
+      .nav-links a:not(.btn):hover{ color:var(--white); }
+
+      /* HERO */
+      .hero{ position:relative; max-width:var(--max); margin:0 auto;
+        padding:clamp(20px,3vw,44px) var(--gutter) clamp(56px,7vw,96px); }
+      .hero-grid{ position:absolute; inset:0; z-index:0;
+        background-image:linear-gradient(var(--line-d) 1px,transparent 1px),
+          linear-gradient(90deg,var(--line-d) 1px,transparent 1px);
+        background-size:58px 58px; opacity:.5;
+        -webkit-mask-image:radial-gradient(120% 100% at 15% 10%, #000 25%, transparent 70%);
+        mask-image:radial-gradient(120% 100% at 15% 10%, #000 25%, transparent 70%); }
+      .hero-wedge{ position:absolute; z-index:0; top:-10%; bottom:-10%; right:-6%; width:64%;
+        background:linear-gradient(115deg, transparent 30%, rgba(229,69,29,.22) 68%, rgba(229,69,29,.04) 92%);
+        clip-path:polygon(26% 0,100% 0,100% 100%,2% 100%); filter:blur(4px); }
+      .hero-inner{ position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr;
+        gap:clamp(24px,4vw,48px); align-items:center; min-height:clamp(380px,46vw,540px); }
+      .hero-copy .eyebrow{ margin-bottom:24px; }
+      .lede{ margin-top:22px; color:var(--white-dim); font-size:1.06rem; line-height:1.7; max-width:44ch; }
+      .hero-copy .btn{ margin-top:32px; }
+      .hero-media{ position:relative; }
+      .hero-media img{ width:min(112%, 760px); max-width:none; margin-left:-5%;
+        filter:drop-shadow(0 28px 44px rgba(0,0,0,.38)) contrast(1.06) saturate(.95); }
+      .hero-tag{ position:absolute; right:6%; bottom:8%; font-family:var(--mono); font-size:.72rem;
+        color:var(--white-dim); background:rgba(17,18,19,.72); border:1px solid var(--line-d-2);
+        border-radius:100px; padding:6px 14px; }
+
+      /* dark sections */
+      .dsection{ max-width:var(--max); margin:0 auto; padding:clamp(48px,6vw,80px) var(--gutter) 0; }
+      .dsection-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:24px;
+        margin-bottom:clamp(28px,3.5vw,44px); }
+      .dsection-head.col{ flex-direction:column; align-items:flex-start; gap:16px; }
+      .dsub{ margin-top:16px; color:var(--white-dim); font-size:1.02rem; max-width:52ch; }
+
+      /* compound carousel (Vitour product cards) */
+      .carousel-nav{ display:flex; gap:10px; }
+      .cbtn{ width:44px; height:44px; border-radius:100px; background:var(--dark-2);
+        border:1px solid var(--line-d-2); color:var(--white); font-size:1.3rem; cursor:pointer;
+        transition:border-color var(--dur) var(--ease), background var(--dur) var(--ease); }
+      .cbtn:hover{ border-color:var(--line-d-2); background:var(--dark-3); }
+      .carousel{ display:grid; grid-auto-flow:column; grid-auto-columns:minmax(300px,1fr);
+        gap:20px; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:6px; scrollbar-width:none; }
+      .carousel::-webkit-scrollbar{ display:none; }
+      .pcard{ scroll-snap-align:start; background:var(--dark-2); border:1px solid var(--line-d);
+        border-radius:var(--r-card); overflow:hidden; display:flex; flex-direction:column;
+        transition:border-color var(--dur) var(--ease), transform var(--dur) var(--ease); }
+      .pcard:hover{ border-color:var(--line-d-2); transform:translateY(-4px); }
+      .pcard-media{ position:relative; aspect-ratio:16/10; overflow:hidden; }
+      .pcard-media img{ width:100%; height:100%; object-fit:cover; filter:contrast(1.04) saturate(.9); }
+      .pcard-new{ position:absolute; top:14px; left:14px; font-size:.7rem; font-weight:500;
+        letter-spacing:.04em; background:var(--white); color:var(--dark); border-radius:100px; padding:4px 12px; }
+      .pcard-body{ padding:22px; display:flex; flex-direction:column; flex:1; }
+      .pcard-tier{ font-size:.78rem; color:var(--white-faint); letter-spacing:.02em; }
+      .pcard-body h3{ margin:8px 0 10px; }
+      .pcard-note{ font-size:.9rem; color:var(--white-dim); line-height:1.55; flex:1; }
+      .pcard-scale{ position:relative; height:8px; border-radius:100px; background:var(--dark);
+        border:1px solid var(--line-d); overflow:hidden; margin:18px 0 20px; }
+      .pcard-scale-fill{ position:absolute; top:0; bottom:0; background:var(--thermal); border-radius:100px; }
+      .pcard-cta{ align-self:flex-start; }
+
+      /* feature tabs */
+      .why-tabs{ display:flex; gap:6px; border-bottom:1px solid var(--line-d);
+        margin-bottom:clamp(28px,3vw,40px); flex-wrap:wrap; }
+      .why-tab{ background:transparent; border:none; color:var(--white-faint); cursor:pointer;
+        font-family:var(--font); font-size:.95rem; font-weight:500; letter-spacing:.02em;
+        padding:14px 8px; position:relative; transition:color var(--dur) var(--ease); }
+      .why-tab::after{ content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px;
+        background:var(--accent); transform:scaleX(0); transition:transform var(--dur) var(--ease); }
+      .why-tab:hover{ color:var(--white-dim); }
+      .why-tab.on{ color:var(--white); }
+      .why-tab.on::after{ transform:scaleX(1); }
+      .why-panels{ position:relative; }
+      .why-panel{ display:none; grid-template-columns:1fr 1fr; gap:clamp(28px,4vw,56px); align-items:center; }
+      .why-panel.on{ display:grid; }
+      .why-copy h3{ font-size:1.5rem; line-height:1.25; }
+      .why-copy p{ margin:16px 0 26px; color:var(--white-dim); font-size:1rem; max-width:46ch; }
+      .why-fig img{ width:100%; border-radius:var(--r-card); border:1px solid var(--line-d);
+        filter:contrast(1.05) saturate(.9) brightness(.95); }
+
+      /* configurator — heading stacked above a full-width card */
+      .cfg-copy{ max-width:64ch; margin-bottom:clamp(28px,3.5vw,44px); }
+      .cfg-copy .eyebrow{ margin-bottom:16px; }
+      .cfg-copy h2{ margin-bottom:0; }
+      .cfg-copy .dsub{ margin-top:14px; }
+      /* Configurator keeps its native warm palette + Montserrat, matching the page. */
+      .dark-wrap .lava-studio-cfg{
+        --text:"Montserrat",system-ui,sans-serif; --display:"Montserrat",system-ui,sans-serif;
+      }
+
+      /* LIGHT block */
+      .lsection{ max-width:var(--max); margin:0 auto; padding:var(--section-y) var(--gutter) 0; }
+      .lsection:first-of-type{ padding-top:calc(var(--section-y) + 8px); }
+      .testi{ padding-bottom:var(--section-y); }
+      .lsection-head{ margin-bottom:clamp(28px,3.5vw,44px); }
+      .lsection-head .eyebrow{ margin-bottom:16px; }
+      .lsection-head h2{ color:var(--ink); }
+      .lsub{ margin-top:14px; color:var(--ink-dim); font-size:1.02rem; max-width:54ch; }
+
+      /* proof bars (on light) */
+      .bars{ display:flex; flex-direction:column; }
+      .bar-row{ display:grid; grid-template-columns:230px 1fr 64px; gap:24px; align-items:center;
+        padding:22px 0; border-top:1px solid var(--line-l); }
+      .bar-row:last-child{ border-bottom:1px solid var(--line-l); }
+      .bar-name{ display:block; font-size:1rem; font-weight:600; color:var(--ink); }
+      .bar-part{ display:block; font-family:var(--mono); font-size:.72rem; color:var(--ink-faint); margin-top:5px; }
+      .bar-stack{ display:flex; flex-direction:column; gap:8px; }
+      .bar-track{ position:relative; height:28px; background:#E1DCD2; border-radius:100px; overflow:hidden; }
+      .bar{ position:absolute; inset:0 auto 0 0; height:100%; border-radius:100px; }
+      /* Value contrast, not colour: LAVA is the solid dark bar, the rival a faint grey. */
+      .bar-lava{ background:var(--dark); }
+      .bar-rival{ background:#C9C2B4; }
+      .bar-val{ position:absolute; left:14px; top:50%; transform:translateY(-50%);
+        font-family:var(--mono); font-size:.72rem; z-index:1; }
+      .bar-val-lava{ color:var(--white); }
+      .bar-val-rival{ color:var(--ink-dim); }
+      .bar-save{ font-family:var(--mono); font-size:1.14rem; color:var(--ink); text-align:right; }
+
+      /* testimonials */
+      .testi-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+      .tcard{ background:#fff; border:1px solid var(--line-l); border-radius:18px; padding:28px;
+        display:flex; flex-direction:column; gap:22px; }
+      .tcard blockquote{ font-size:1.04rem; line-height:1.5; color:var(--ink); flex:1; }
+      .tcard figcaption{ display:flex; align-items:center; gap:14px; }
+      .tcard-mono{ width:44px; height:44px; border-radius:100px; background:var(--dark); color:var(--white);
+        display:flex; align-items:center; justify-content:center; font-weight:600; font-size:.9rem; }
+      .tcard-meta b{ display:block; font-size:.95rem; color:var(--ink); }
+      .tcard-meta em{ font-style:normal; font-size:.78rem; color:var(--ink-faint); }
+
+      /* CTA newsletter panel */
+      .cta-wrap{ padding:0 var(--gutter) var(--section-y); }
+      .cta{ max-width:var(--max); margin:0 auto; border-radius:var(--r-panel); overflow:hidden;
+        background:linear-gradient(rgba(17,18,19,.82),rgba(17,18,19,.92)), url("/gen/track.jpg") center/cover;
+        color:var(--white); text-align:center; padding:clamp(56px,8vw,104px) var(--gutter);
+        display:flex; flex-direction:column; align-items:center; }
+      .cta h2{ color:var(--white); }
+      .cta p{ margin:16px 0 30px; color:var(--white-dim); font-size:1.08rem; max-width:46ch; }
+      .cta-from{ margin-top:20px; font-family:var(--mono); font-size:.75rem; color:var(--white-faint); }
+
+      /* footer */
+      .foot{ background:var(--dark); color:var(--white); }
+      .foot-inner{ max-width:var(--max); margin:0 auto; padding:48px var(--gutter);
+        display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+      .foot-logo{ height:20px; filter:brightness(0) invert(1); }
+      .foot-meta{ display:flex; flex-direction:column; gap:4px; text-align:right;
+        font-family:var(--mono); font-size:.72rem; color:var(--white-faint); }
+
+      /* responsive */
+      @media (max-width:940px){
+        .hero-inner{ grid-template-columns:1fr; }
+        .hero-media{ order:-1; max-width:520px; }
+        .why-panel.on{ grid-template-columns:1fr; }
+        .why-fig{ order:-1; }
+        .testi-grid{ grid-template-columns:1fr; }
+        .bar-row{ grid-template-columns:1fr 56px; grid-template-areas:"fit save" "stack save"; }
+        .bar-fit{ grid-area:fit; } .bar-stack{ grid-area:stack; } .bar-save{ grid-area:save; }
+      }
+      @media (max-width:560px){
+        .nav-badge{ display:none; }
+        .nav-links a:not(.btn){ display:none; }
+        .dsection-head{ flex-direction:column; align-items:flex-start; }
+        .foot-meta{ text-align:left; }
+      }
+      @media (prefers-reduced-motion:reduce){
+        html{ scroll-behavior:auto; }
+        *{ transition:none !important; }
+      }
+    </style>
+  </body>
+</html>

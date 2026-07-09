@@ -1,0 +1,334 @@
+---
+// Variant F — "Arcade": a joyful, toy-like landing page inspired by play.date.
+// Chunky rounded display type, bold orange/amber blocks on black, playful microcopy,
+// the compounds presented as five collectible "characters", and the shared configurator
+// dressed up as a "build your box" step. Self-contained document — no shared layout.
+import Configurator from "../../components/Configurator.tsx";
+import { COMPOUNDS, CALIPERS, FROM_PRICE } from "../../lib/lava-data";
+
+// A personality one-liner + a "heat level" for each compound character.
+const personas: Record<string, { tag: string; vibe: string; heat: number; emoji: string }> = {
+  "MK": { tag: "The Smooth Operator", vibe: "Cold-start hero. Quiet, low-dust, zero drama on the school run.", heat: 1, emoji: "😎" },
+  "SR": { tag: "The Weekend Warrior", vibe: "Backroad blitzer that still shows up for the odd track day.", heat: 2, emoji: "🔥" },
+  "TW": { tag: "The Track Rat", vibe: "Lives at the circuit. Holds bite all session, never taps out.", heat: 3, emoji: "🏁" },
+  "TW/2": { tag: "The Boss Fight", vibe: "Endurance-grade chomp for the hardest, latest, scariest stops.", heat: 4, emoji: "💥" },
+  "TWe": { tag: "The Immortal", vibe: "The lowest wear we make. Basically kind to discs forever.", heat: 5, emoji: "👑" },
+};
+
+const facts = [
+  { big: "0.001mm", small: "disc wear on TWe. Basically immortal." },
+  { big: "~50%", small: "of the Ferodo / EBC invoice. Same friction tier." },
+  { big: `${CALIPERS.length}`, small: "caliper fitments. Yours is probably in there." },
+  { big: "850°C", small: "top ceiling. Glowing-red and unbothered." },
+  { big: "5", small: "compounds to collect. Gotta bite 'em all." },
+  { big: "🇵🇱", small: "designed &amp; made in Poland. Every single set." },
+];
+
+const compare = [
+  { fit: "Impreza STI / Civic FK8", lava: 600, rival: 1169 },
+  { fit: "Nissan GTR · Brembo", lava: 800, rival: 1333 },
+  { fit: "Audi RS3 / RS5", lava: 700, rival: 1662 },
+  { fit: "Yaris GR", lava: 800, rival: 1450 },
+];
+
+const collectibles = ["Impreza STI", "Civic FK8", "Lancer EVO", "Nissan GTR", "Yaris GR", "Supra GR", "MX-5", "BMW M2", "Audi RS3", "AP Racing R5", "Mustang", "i30N"];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>LAVA — Meet the compounds (Variant F · Arcade)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="tag">Variant F · Arcade</div>
+
+    <header class="nav">
+      <img src="/lava-logo.svg" alt="LAVA" class="logo" />
+      <nav>
+        <a href="#collect">The compounds</a>
+        <a href="#facts">Facts</a>
+        <a href="#configure">Build a box</a>
+        <a href="#configure" class="cta-sm">Play →</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="badge">🌋 Performance brake pads · Made in Poland</span>
+        <h1>Meet the<br /><span class="pop">compounds.</span></h1>
+        <p class="lede">
+          Five friction characters, one perfect fit for your caliper. Track-grade bite,
+          corner-shop price, and a whole lot less drama than the imports. Pick your pad,
+          build your box, brake like you mean it.
+        </p>
+        <div class="hero-actions">
+          <a href="#configure" class="btn">Build your box</a>
+          <a href="#collect" class="btn ghost">See the five →</a>
+        </div>
+        <p class="from">from <strong>{FROM_PRICE} zł</strong> / set · fits {CALIPERS.length} calipers</p>
+      </div>
+      <div class="hero-media">
+        <div class="hero-frame">
+          <img src="/gen/pad-studio.jpg" alt="LAVA performance brake pad" />
+        </div>
+        <div class="sticker s1">new!</div>
+        <div class="sticker s2">🔥 hot</div>
+      </div>
+    </section>
+
+    <div class="marquee"><div class="marquee-track">
+      {[...collectibles, ...collectibles].map((m) => <span>★ {m}</span>)}
+    </div></div>
+
+    <section id="collect" class="collect">
+      <div class="c-head">
+        <h2>Five compounds<br />to collect.</h2>
+        <p>From chill street cruiser to disc-eating endurance boss. Every one is a
+        direct-fit for your caliper — just pick the personality that matches your right foot.</p>
+      </div>
+      <div class="c-grid">
+        {COMPOUNDS.map((c, i) => {
+          const p = personas[c.code];
+          return (
+            <article class={`char char-${i}`}>
+              <div class="char-top">
+                <span class="char-emoji">{p.emoji}</span>
+                <span class="char-num">#{i + 1}/5</span>
+              </div>
+              <h3>{c.code}</h3>
+              <p class="char-name">{c.name}</p>
+              <p class="char-tag">{p.tag}</p>
+              <p class="char-vibe">{p.vibe}</p>
+              <div class="heat">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <span class={n <= p.heat ? "on" : ""}></span>
+                ))}
+              </div>
+              <p class="char-temp">{c.temp} · {c.rival}</p>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+
+    <section id="heat" class="heat-block">
+      <div class="heat-inner">
+        <div class="heat-copy">
+          <h2>How hot<br />do you run?</h2>
+          <p>Slide from Sunday cruise to a red-hot enduro stint. LAVA has a compound
+          that stays composed exactly where your foot lives.</p>
+        </div>
+        <div class="heat-media">
+          <div class="square-frame">
+            <img src="/gen/rotor-square.jpg" alt="Glowing brake rotor, top-down" />
+          </div>
+          <div class="heat-scale">
+            <span>20°C · school run</span>
+            <div class="heat-bar"></div>
+            <span>850°C · glowing red</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="facts" class="facts">
+      <h2 class="facts-title">Fun facts, real bite.</h2>
+      <div class="fact-grid">
+        {facts.map((f, i) => (
+          <div class={`fact fact-${i % 3}`}>
+            <b set:html={f.big}></b>
+            <span set:html={f.small}></span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section id="configure" class="configure">
+      <div class="cfg-intro">
+        <span class="badge dark">🎁 The shop</span>
+        <h2>Build your box.</h2>
+        <p>No dusty catalog, no phone calls. Tap a compound, pick your caliper, and the
+        price pops up instantly. That's the exact set that lands on your doorstep.</p>
+        <div class="cfg-img-frame">
+          <img src="/gen/caliper.jpg" alt="LAVA pad on a performance caliper" />
+        </div>
+      </div>
+      <div class="cfg-slot">
+        <Configurator client:load heading="Build your box" />
+      </div>
+    </section>
+
+    <section class="compare">
+      <div class="compare-head">
+        <h2>Track-grade friction.<br /><span class="pop">Corner-shop price.</span></h2>
+        <p>Same friction class as Ferodo &amp; EBC. About half the invoice. We did the
+        maths so your wallet doesn't have to.</p>
+      </div>
+      <div class="bars">
+        {compare.map((r) => (
+          <div class="bar-row">
+            <span class="bar-fit">{r.fit}</span>
+            <div class="bar-lane">
+              <div class="bar lava" style={`width:${Math.round((r.lava / r.rival) * 100)}%`}>{r.lava} zł · LAVA</div>
+            </div>
+            <div class="bar-lane">
+              <div class="bar rival">{r.rival} zł · the import</div>
+            </div>
+            <span class="bar-save">−{Math.round((1 - r.lava / r.rival) * 100)}%</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="cta-band">
+      <h2>Ready to bite?</h2>
+      <p>Five compounds. {CALIPERS.length} fitments. One very happy right foot.</p>
+      <a href="#configure" class="btn big">Build your box →</a>
+    </section>
+
+    <footer class="foot">
+      <img src="/lava-logo.svg" alt="LAVA" />
+      <p>LAVA · molten performance · made in Poland 🇵🇱</p>
+      <p class="foot-fine">Prices in zł (PLN) · from {FROM_PRICE} zł / set</p>
+    </footer>
+
+    <style>
+      :root {
+        --black:#0b0b0d; --panel:#161311; --line:#2a2521;
+        --red:#E43B1B; --orange:#EE7B2E; --amber:#F2A85E; --cream:#F9EFD5;
+        --grad:linear-gradient(90deg,#E43B1B,#EE7B2E,#F2A85E,#F9EFD5);
+      }
+      * { box-sizing:border-box; margin:0; }
+      body { background:var(--black); color:var(--cream); font-family:Nunito,system-ui,sans-serif; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+      h1,h2,h3 { font-family:Fredoka,system-ui,sans-serif; font-weight:700; line-height:.95; letter-spacing:-.01em; }
+      a { color:inherit; text-decoration:none; }
+      .pop { color:var(--orange); }
+      .badge { display:inline-block; background:var(--panel); border:1px solid var(--line); color:var(--amber); font-weight:700; font-size:13px; padding:8px 16px; border-radius:100px; }
+      .badge.dark { background:rgba(11,11,13,.35); border-color:rgba(11,11,13,.2); color:#2a1405; }
+
+      .tag { position:fixed; bottom:14px; left:14px; z-index:60; font-size:11px; font-weight:700; letter-spacing:.04em; background:var(--red); color:#fff; padding:6px 12px; border-radius:100px; box-shadow:0 4px 16px rgba(228,59,27,.4); }
+
+      .btn { display:inline-block; background:var(--grad); color:#2a1405; font-weight:800; padding:15px 28px; border-radius:100px; font-size:16px; box-shadow:0 8px 0 rgba(120,40,10,.35); transition:transform .12s, box-shadow .12s, filter .12s; }
+      .btn:hover { transform:translateY(-2px); box-shadow:0 10px 0 rgba(120,40,10,.35); filter:brightness(1.05); }
+      .btn:active { transform:translateY(3px); box-shadow:0 4px 0 rgba(120,40,10,.35); }
+      .btn.ghost { background:transparent; color:var(--cream); border:2px solid var(--line); box-shadow:none; }
+      .btn.ghost:hover { border-color:var(--amber); }
+      .btn.big { font-size:20px; padding:20px 44px; }
+
+      .nav { display:flex; align-items:center; justify-content:space-between; padding:22px 5vw; position:sticky; top:0; z-index:40; background:rgba(11,11,13,.82); backdrop-filter:blur(10px); }
+      .logo { height:26px; }
+      .nav nav { display:flex; gap:26px; align-items:center; font-weight:700; font-size:15px; }
+      .nav nav a { color:#c9c2b4; }
+      .nav nav a:hover { color:var(--cream); }
+      .cta-sm { background:var(--grad); color:#2a1405 !important; padding:9px 18px; border-radius:100px; box-shadow:0 5px 0 rgba(120,40,10,.35); }
+
+      .hero { display:grid; grid-template-columns:1.05fr .95fr; gap:48px; align-items:center; padding:5vh 5vw 8vh; }
+      h1 { font-size:clamp(52px,8vw,120px); }
+      .lede { margin-top:22px; font-size:clamp(16px,1.8vw,20px); color:#c9c2b4; max-width:44ch; font-weight:600; line-height:1.5; }
+      .hero-actions { display:flex; gap:16px; margin-top:32px; flex-wrap:wrap; }
+      .from { margin-top:26px; color:#a49e91; font-weight:600; }
+      .from strong { color:var(--cream); }
+      .hero .badge { margin-bottom:22px; }
+      .hero-media { position:relative; }
+      .hero-frame { aspect-ratio:1/1; border-radius:28px; overflow:hidden; border:3px solid var(--line); box-shadow:0 30px 90px rgba(228,59,27,.22); }
+      .hero-frame img { width:100%; height:100%; object-fit:cover; }
+      .sticker { position:absolute; font-family:Fredoka; font-weight:700; border-radius:100px; padding:10px 18px; font-size:16px; transform:rotate(-8deg); box-shadow:0 8px 24px rgba(0,0,0,.4); }
+      .sticker.s1 { top:-14px; right:24px; background:var(--grad); color:#2a1405; }
+      .sticker.s2 { bottom:20px; left:-14px; background:var(--red); color:#fff; transform:rotate(7deg); }
+      @media (max-width:880px){ .hero { grid-template-columns:1fr; } .hero-media { order:-1; max-width:440px; } }
+
+      .marquee { border-block:2px solid var(--line); overflow:hidden; background:var(--panel); }
+      .marquee-track { display:flex; gap:34px; padding:16px 0; white-space:nowrap; width:max-content; animation:scroll 34s linear infinite; }
+      .marquee-track span { color:var(--amber); font-weight:800; font-size:15px; letter-spacing:.04em; text-transform:uppercase; }
+      @keyframes scroll { to { transform:translateX(-50%); } }
+
+      section { padding:9vh 5vw; }
+      h2 { font-size:clamp(34px,5.4vw,68px); }
+
+      .collect .c-head { display:grid; grid-template-columns:auto 1fr; gap:48px; align-items:end; margin-bottom:46px; }
+      .collect .c-head p { color:#c9c2b4; font-weight:600; font-size:17px; max-width:52ch; line-height:1.55; }
+      .c-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
+      .char { border-radius:24px; padding:24px 20px 26px; border:3px solid transparent; display:flex; flex-direction:column; min-height:340px; transition:transform .16s; }
+      .char:hover { transform:translateY(-8px) rotate(-1deg); }
+      .char-0 { background:linear-gradient(160deg,#F9EFD5,#F2A85E); color:#2a1405; }
+      .char-1 { background:linear-gradient(160deg,#F2A85E,#EE7B2E); color:#2a1405; }
+      .char-2 { background:linear-gradient(160deg,#EE7B2E,#E43B1B); color:#fff2e6; }
+      .char-3 { background:linear-gradient(160deg,#E43B1B,#a5240e); color:#fff2e6; }
+      .char-4 { background:var(--panel); border-color:var(--amber); color:var(--cream); }
+      .char-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+      .char-emoji { font-size:30px; }
+      .char-num { font-family:Fredoka; font-weight:700; font-size:13px; opacity:.7; }
+      .char h3 { font-size:46px; }
+      .char-name { font-family:Fredoka; font-weight:600; font-size:18px; margin-top:2px; }
+      .char-tag { font-weight:800; font-size:13px; text-transform:uppercase; letter-spacing:.03em; margin-top:10px; opacity:.85; }
+      .char-vibe { font-weight:600; font-size:14px; line-height:1.45; margin-top:8px; flex:1; opacity:.92; }
+      .heat { display:flex; gap:5px; margin:14px 0 12px; }
+      .heat span { width:100%; height:8px; border-radius:100px; background:currentColor; opacity:.22; }
+      .heat span.on { opacity:.95; }
+      .char-temp { font-weight:700; font-size:11px; opacity:.7; letter-spacing:.02em; }
+      @media (max-width:1080px){ .c-grid { grid-template-columns:repeat(3,1fr); } }
+      @media (max-width:880px){ .collect .c-head { grid-template-columns:1fr; gap:18px; } }
+      @media (max-width:620px){ .c-grid { grid-template-columns:1fr; } .char { min-height:auto; } }
+
+      .heat-block { padding-inline:5vw; }
+      .heat-inner { background:var(--grad); border-radius:28px; padding:6vh 6vw; display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; color:#2a1405; }
+      .heat-copy h2 { color:#2a1405; }
+      .heat-copy p { font-weight:700; font-size:18px; margin-top:18px; max-width:34ch; line-height:1.5; }
+      .square-frame { aspect-ratio:1/1; border-radius:22px; overflow:hidden; border:4px solid rgba(42,20,5,.25); }
+      .square-frame img { width:100%; height:100%; object-fit:cover; }
+      .heat-scale { margin-top:16px; }
+      .heat-scale span { display:block; font-weight:800; font-size:13px; }
+      .heat-scale span:last-child { text-align:right; }
+      .heat-bar { height:12px; border-radius:100px; margin:8px 0; background:linear-gradient(90deg,#7a4a20,#E43B1B,#F9EFD5); box-shadow:inset 0 0 0 2px rgba(42,20,5,.2); }
+      @media (max-width:880px){ .heat-inner { grid-template-columns:1fr; } }
+
+      .facts-title { margin-bottom:38px; }
+      .fact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+      .fact { border-radius:22px; padding:34px 28px; border:3px solid var(--line); background:var(--panel); }
+      .fact-0 { background:var(--panel); }
+      .fact-1 { background:linear-gradient(160deg,#EE7B2E,#E43B1B); border-color:transparent; color:#2a1405; }
+      .fact-2 { background:var(--panel); }
+      .fact b { display:block; font-family:Fredoka; font-weight:700; font-size:clamp(40px,5vw,60px); line-height:1; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+      .fact-1 b { background:none; -webkit-text-fill-color:#2a1405; color:#2a1405; }
+      .fact span { display:block; margin-top:14px; font-weight:700; font-size:16px; color:#c9c2b4; line-height:1.4; }
+      .fact-1 span { color:#2a1405; opacity:.85; }
+      @media (max-width:880px){ .fact-grid { grid-template-columns:1fr; } }
+
+      .configure { display:grid; grid-template-columns:1fr 1fr; gap:50px; align-items:center; background:var(--panel); border-radius:28px; margin:0 3vw; padding:8vh 5vw; }
+      .cfg-intro .badge { margin-bottom:20px; background:var(--grad); border-color:transparent; color:#2a1405; }
+      .cfg-intro h2 { margin-bottom:14px; }
+      .cfg-intro p { color:#c9c2b4; font-weight:600; font-size:17px; max-width:40ch; line-height:1.5; margin-bottom:26px; }
+      .cfg-img-frame { aspect-ratio:4/3; border-radius:22px; overflow:hidden; border:3px solid var(--line); }
+      .cfg-img-frame img { width:100%; height:100%; object-fit:cover; }
+      .cfg-slot { display:flex; justify-content:center; }
+      @media (max-width:880px){ .configure { grid-template-columns:1fr; } }
+
+      .compare .compare-head { max-width:760px; margin-bottom:44px; }
+      .compare-head p { color:#c9c2b4; font-weight:600; font-size:18px; margin-top:16px; line-height:1.5; }
+      .bars { display:flex; flex-direction:column; gap:16px; max-width:960px; }
+      .bar-row { display:grid; grid-template-columns:210px 1fr 56px; grid-template-areas:"fit lava save" "fit rival save"; gap:8px 20px; align-items:center; }
+      .bar-fit { grid-area:fit; font-family:Fredoka; font-weight:600; font-size:17px; }
+      .bar-lane { height:38px; border-radius:100px; background:#211d19; overflow:hidden; display:flex; }
+      .bar-lane:nth-of-type(1){ grid-area:lava; } .bar-lane:nth-of-type(2){ grid-area:rival; }
+      .bar { height:100%; display:flex; align-items:center; padding:0 18px; border-radius:100px; font-weight:800; font-size:13px; white-space:nowrap; }
+      .bar.lava { background:var(--grad); color:#2a1405; }
+      .bar.rival { background:#3a352f; color:#8a857a; width:100%; }
+      .bar-save { grid-area:save; font-family:Fredoka; font-weight:700; color:#8ce08f; font-size:22px; }
+      @media (max-width:720px){ .bar-row { grid-template-columns:1fr 52px; grid-template-areas:"fit save" "lava save" "rival save"; } }
+
+      .cta-band { text-align:center; }
+      .cta-band h2 { font-size:clamp(44px,7vw,90px); }
+      .cta-band h2::after { content:" 🌋"; }
+      .cta-band p { color:#c9c2b4; font-weight:700; font-size:19px; margin:16px 0 34px; }
+
+      .foot { text-align:center; padding:8vh 5vw; border-top:2px solid var(--line); }
+      .foot img { height:24px; margin-bottom:16px; }
+      .foot p { color:#8a857a; font-weight:700; font-size:14px; }
+      .foot-fine { margin-top:6px; color:#6f6a60; font-weight:600; font-size:12px; }
+    </style>
+  </body>
+</html>

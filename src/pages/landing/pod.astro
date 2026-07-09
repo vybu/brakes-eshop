@@ -1,0 +1,364 @@
+---
+// Variant E — "Pod": premium performance-tech landing, structurally inspired by
+// eightsleep.com — bold outcome hero, trusted-by strip, LARGE alternating benefit
+// sections, a science/metric block, a comparison moment, a quote, the inline
+// configurator (this is the shop), a final CTA and footer. Metric-forward, calm
+// but confident. Different rhythm and type from hybrid.astro.
+import Configurator from "../../components/Configurator.tsx";
+import { COMPOUNDS, FROM_PRICE, CALIPERS } from "../../lib/lava-data";
+
+const press = ["EVO", "Autocar", "Track Days UK", "Time Attack", "Redline", "GT Academy"];
+
+// Large alternating benefit sections — each is image + headline + one metric + a line.
+const benefits = [
+  {
+    img: "/gen/track.jpg",
+    alt: "Car braking hard into a corner on track",
+    eyebrow: "Thermal ceiling",
+    metric: "850°C",
+    unit: "peak, no fade",
+    head: "Braking that never blinks.",
+    body: "Our race compound holds its bite from the first stop to the last lap. No glazing, no long-pedal panic — just the same wall of retardation, every corner.",
+    align: "left",
+  },
+  {
+    img: "/gen/rotor-square.jpg",
+    alt: "Glowing brake rotor viewed top-down",
+    eyebrow: "Disc wear",
+    metric: "0.001mm",
+    unit: "TWe endurance",
+    head: "Kind to the parts that cost.",
+    body: "The TWe endurance compound is the lowest-wear pad we make. It saves your discs as hard as it saves your lap time — a full season on one set is normal.",
+    align: "right",
+  },
+  {
+    img: "/gen/caliper.jpg",
+    alt: "Performance brake caliper mounted on a wheel",
+    eyebrow: "Exact fitment",
+    metric: `${CALIPERS.length}`,
+    unit: "caliper fitments",
+    head: "Modelled to your caliper.",
+    body: "Every backing plate is cut to the exact caliper on your car — Brembo, AP Racing, OEM big-brake. Drop-in fit, no filing, no rattle, no guesswork.",
+    align: "left",
+  },
+];
+
+// Comparison moment — LAVA vs the incumbents, same friction tier, ~half the invoice.
+const compare = [
+  { fit: "Impreza STI · Civic FK8", lava: 600, rival: 1169, brand: "Ferodo DS2500" },
+  { fit: "Nissan GTR · Brembo", lava: 800, rival: 1333, brand: "Ferodo DS2500" },
+  { fit: "Audi RS3 · RS5", lava: 700, rival: 1662, brand: "EBC Bluestuff" },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>LAVA — Performance brake pads that never fade (Variant E · Pod)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="tag">Variant E · Pod</div>
+
+    <header class="nav">
+      <img src="/lava-logo.svg" alt="LAVA" class="logo" />
+      <nav>
+        <a href="#science">Science</a>
+        <a href="#compare">Compare</a>
+        <a href="#configure">Build</a>
+        <a href="#configure" class="cta-sm">Build your set</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">Performance brake pads &middot; engineered in Poland</p>
+      <h1>Brake harder,<br /><span>lap after lap.</span></h1>
+      <p class="lede">
+        LAVA builds direct-fit competition pads in five compounds — measured against
+        Ferodo and EBC, sold for roughly half. The performance of the podium, without the invoice.
+      </p>
+      <div class="hero-actions">
+        <a href="#configure" class="btn">Build your set</a>
+        <span class="from">from <strong>{FROM_PRICE} zł</strong> / set</span>
+      </div>
+      <div class="hero-media">
+        <img src="/gen/hero-rotor.jpg" alt="Glowing LAVA performance rotor and caliper" />
+      </div>
+      <div class="hero-stats">
+        <div><b>850°C</b><span>thermal ceiling</span></div>
+        <div><b>{CALIPERS.length}</b><span>caliper fitments</span></div>
+        <div><b>~50%</b><span>the price of Ferodo</span></div>
+        <div><b>5</b><span>compounds, road to race</span></div>
+      </div>
+    </section>
+
+    <section class="press">
+      <p class="press-label">Trusted on road and track</p>
+      <div class="press-logos">
+        {press.map((p) => <span>{p}</span>)}
+      </div>
+    </section>
+
+    <section class="benefits">
+      {benefits.map((b) => (
+        <div class={`benefit ${b.align}`}>
+          <div class="benefit-media">
+            <img src={b.img} alt={b.alt} />
+          </div>
+          <div class="benefit-copy">
+            <p class="benefit-eyebrow">{b.eyebrow}</p>
+            <h2>{b.head}</h2>
+            <div class="benefit-metric">
+              <b>{b.metric}</b>
+              <span>{b.unit}</span>
+            </div>
+            <p class="benefit-body">{b.body}</p>
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section id="science" class="science">
+      <div class="science-head">
+        <p class="benefit-eyebrow">The science</p>
+        <h2>Measured, not marketed.</h2>
+        <p class="science-lede">
+          Every compound is characterised on the dyno for temperature window, friction
+          stability and wear before it earns a code. Here is what the numbers say.
+        </p>
+      </div>
+      <div class="science-grid">
+        <div class="sci-card">
+          <b>20&ndash;850<i>°C</i></b>
+          <p>Operating range across the range — from the cold-bite MK Fast Road to the TWe Endurance ceiling.</p>
+        </div>
+        <div class="sci-card">
+          <b>0.001<i>mm</i></b>
+          <p>Disc wear per stop on the TWe compound. The lowest we make, and the kindest to your rotors.</p>
+        </div>
+        <div class="sci-card">
+          <b>0<i>% fade</i></b>
+          <p>Friction stability held through a full track session — no long pedal, no fade wall on lap 20.</p>
+        </div>
+      </div>
+      <div class="compounds">
+        {COMPOUNDS.map((c, i) => (
+          <article class="c-card">
+            <div class="c-bar" style={`--i:${i}`}></div>
+            <div class="c-top">
+              <h3>{c.code}</h3>
+              <span class="c-name">{c.name}</span>
+            </div>
+            <p class="c-temp">{c.temp}</p>
+            <p class="c-note">{c.note}</p>
+            <p class="c-rival">{c.rival}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="compare" class="compare">
+      <div class="compare-head">
+        <p class="benefit-eyebrow">LAVA vs the incumbents</p>
+        <h2>Superior performance.<br /><span>Roughly half the price.</span></h2>
+        <p class="science-lede">
+          Same friction class as Ferodo and EBC — the tier the paddock actually runs —
+          for a fraction of the outlay. Price per set, in zł.
+        </p>
+      </div>
+      <div class="bars">
+        {compare.map((r) => (
+          <div class="bar-row">
+            <span class="bar-fit">{r.fit}</span>
+            <div class="bar-stack">
+              <div class="bar-line">
+                <div class="bar lava" style={`width:${(r.lava / r.rival) * 100}%`}></div>
+                <span class="bar-tag">LAVA · {r.lava} zł</span>
+              </div>
+              <div class="bar-line">
+                <div class="bar rival" style="width:100%"></div>
+                <span class="bar-tag ghost">{r.brand} · {r.rival} zł</span>
+              </div>
+            </div>
+            <span class="bar-save">&minus;{Math.round((1 - r.lava / r.rival) * 100)}%</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="quote">
+      <div class="quote-media">
+        <img src="/gen/pad-studio.jpg" alt="Matte black LAVA brake pad" />
+      </div>
+      <figure>
+        <blockquote>
+          &ldquo;I ran the TW/2 on the EVO for a full Time Attack season. Consistent to the
+          last lap, the discs are still fine, and it cost me half what I paid for the pads
+          I used to bin every other weekend.&rdquo;
+        </blockquote>
+        <figcaption><strong>Marek K.</strong> &middot; Time Attack, class winner</figcaption>
+      </figure>
+    </section>
+
+    <section id="configure" class="configure">
+      <div class="cfg-copy">
+        <p class="benefit-eyebrow">Build &amp; buy</p>
+        <h2>Build your set.</h2>
+        <p>
+          No catalogue to dig through. Pick a compound, pick your caliper, and the price is
+          instant — the exact set that ships to your door. {CALIPERS.length} fitments, five compounds.
+        </p>
+        <ul class="cfg-points">
+          <li>Direct-fit, modelled to your caliper</li>
+          <li>Priced in zł, roughly half of Ferodo</li>
+          <li>Road, sport, trackday, race &amp; endurance</li>
+        </ul>
+      </div>
+      <Configurator client:load heading="Build your set" />
+    </section>
+
+    <section class="final-cta">
+      <h2>Molten performance.<br /><span>Half the invoice.</span></h2>
+      <a href="#configure" class="btn">Build your set — from {FROM_PRICE} zł</a>
+      <p class="final-note">Direct-fit competition pads &middot; engineered &amp; made in Poland</p>
+    </section>
+
+    <footer class="foot">
+      <img src="/lava-logo.svg" alt="LAVA" />
+      <p>LAVA &middot; performance brake pads &middot; made in Poland</p>
+    </footer>
+
+    <style>
+      :root {
+        --black:#0b0b0d; --panel:#141416; --panel2:#0f0f11; --line:#26262a;
+        --red:#E43B1B; --orange:#EE7B2E; --amber:#F2A85E; --cream:#F9EFD5;
+        --muted:#a49e91; --dim:#7d7870;
+        --grad:linear-gradient(90deg,#E43B1B,#EE7B2E,#F2A85E,#F9EFD5);
+      }
+      * { box-sizing:border-box; margin:0; }
+      body { background:var(--black); color:var(--cream); font-family:Manrope,system-ui,sans-serif; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+      h1,h2,h3 { font-family:"Space Grotesk",Manrope,sans-serif; font-weight:700; line-height:1.02; letter-spacing:-0.02em; }
+      a { color:inherit; text-decoration:none; }
+      .btn { display:inline-block; background:var(--grad); color:#1a0d05; font-weight:700; padding:16px 30px; border-radius:100px; font-size:15px; transition:transform .2s, filter .2s; }
+      .btn:hover { transform:translateY(-2px); filter:brightness(1.06); }
+      .benefit-eyebrow, .eyebrow, .press-label { font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); }
+      section { padding:11vh 6vw; }
+      h2 { font-size:clamp(30px,4.4vw,54px); }
+      h2 span { background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+      .tag { position:fixed; bottom:14px; left:14px; z-index:60; font-size:11px; letter-spacing:.06em; background:var(--red); color:#fff; padding:5px 12px; border-radius:100px; opacity:.9; box-shadow:0 6px 18px rgba(228,59,27,.4); }
+
+      /* NAV */
+      .nav { position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; padding:18px 6vw; background:rgba(11,11,13,.72); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+      .logo { height:24px; }
+      .nav nav { display:flex; gap:30px; align-items:center; font-size:14px; }
+      .nav nav a { color:var(--muted); }
+      .nav nav a:hover { color:var(--cream); }
+      .cta-sm { background:var(--grad); color:#1a0d05 !important; font-weight:700; padding:9px 18px; border-radius:100px; }
+      @media (max-width:880px){ .nav nav a:not(.cta-sm){ display:none; } }
+
+      /* HERO */
+      .hero { text-align:center; padding:9vh 6vw 8vh; max-width:1100px; margin:0 auto; }
+      .hero .eyebrow { margin-bottom:22px; }
+      h1 { font-size:clamp(46px,8vw,104px); font-weight:700; }
+      h1 span { background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+      .lede { margin:26px auto 0; font-size:clamp(16px,1.9vw,21px); color:var(--muted); max-width:56ch; line-height:1.5; }
+      .hero-actions { display:flex; align-items:center; justify-content:center; gap:24px; margin-top:34px; flex-wrap:wrap; }
+      .from { color:var(--dim); font-size:15px; } .from strong { color:var(--cream); }
+      .hero-media { margin-top:56px; }
+      .hero-media img { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:20px; box-shadow:0 40px 120px rgba(228,59,27,.22); }
+      .hero-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; margin-top:52px; border-top:1px solid var(--line); padding-top:36px; }
+      .hero-stats b { display:block; font-family:"Space Grotesk"; font-size:clamp(26px,3vw,38px); font-weight:700; }
+      .hero-stats span { display:block; margin-top:6px; font-size:12px; color:var(--dim); letter-spacing:.02em; }
+      @media (max-width:880px){ .hero-stats { grid-template-columns:1fr 1fr; gap:28px 24px; } }
+
+      /* PRESS */
+      .press { text-align:center; padding:6vh 6vw; border-block:1px solid var(--line); background:var(--panel2); }
+      .press-label { color:var(--dim); margin-bottom:24px; }
+      .press-logos { display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:14px 44px; }
+      .press-logos span { font-family:"Space Grotesk"; font-weight:600; font-size:clamp(16px,2vw,24px); color:#5d594f; letter-spacing:.04em; transition:color .2s; }
+      .press-logos span:hover { color:var(--cream); }
+
+      /* BENEFITS — large alternating */
+      .benefits { display:flex; flex-direction:column; gap:14vh; padding:13vh 6vw; }
+      .benefit { display:grid; grid-template-columns:1fr 1fr; gap:6vw; align-items:center; }
+      .benefit.right .benefit-media { order:2; }
+      .benefit-media img { width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:20px; box-shadow:0 30px 80px rgba(0,0,0,.5); }
+      .benefit-copy h2 { margin:14px 0 22px; }
+      .benefit-metric { display:flex; align-items:baseline; gap:14px; padding:18px 0; border-block:1px solid var(--line); margin-bottom:22px; }
+      .benefit-metric b { font-family:"Space Grotesk"; font-size:clamp(40px,5vw,62px); font-weight:700; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+      .benefit-metric span { font-size:14px; color:var(--dim); letter-spacing:.04em; }
+      .benefit-body { font-size:17px; color:var(--muted); line-height:1.6; max-width:46ch; }
+      @media (max-width:880px){ .benefits { gap:10vh; } .benefit { grid-template-columns:1fr; gap:28px; } .benefit.right .benefit-media { order:-1; } }
+
+      /* SCIENCE */
+      .science { background:var(--panel2); border-block:1px solid var(--line); }
+      .science-head { max-width:720px; margin-bottom:52px; }
+      .science-head h2 { margin:14px 0 18px; }
+      .science-lede { font-size:17px; color:var(--muted); line-height:1.6; }
+      .science-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:20px; }
+      .sci-card { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:30px 28px 32px; }
+      .sci-card b { font-family:"Space Grotesk"; font-size:clamp(34px,4.4vw,52px); font-weight:700; display:block; }
+      .sci-card b i { font-style:normal; font-size:.42em; color:var(--orange); }
+      .sci-card p { margin-top:16px; font-size:14px; color:var(--muted); line-height:1.55; }
+      @media (max-width:880px){ .science-grid { grid-template-columns:1fr; } }
+
+      /* COMPOUNDS */
+      .compounds { display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-top:56px; }
+      .c-card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:22px 20px 26px; }
+      .c-bar { height:6px; border-radius:100px; margin-bottom:22px; background:hsl(calc(26 - var(--i)*5), 90%, calc(50% + var(--i)*7%)); }
+      .c-top { display:flex; align-items:baseline; gap:10px; }
+      .c-card h3 { font-size:30px; }
+      .c-name { font-size:12px; color:var(--orange); letter-spacing:.06em; text-transform:uppercase; }
+      .c-temp { font-family:"Space Grotesk"; font-size:14px; color:var(--cream); margin:14px 0 12px; }
+      .c-note { font-size:13px; color:var(--muted); line-height:1.5; }
+      .c-rival { font-size:12px; color:var(--dim); margin-top:14px; }
+      @media (max-width:900px){ .compounds { grid-template-columns:1fr 1fr; } }
+
+      /* COMPARE */
+      .compare-head { max-width:720px; margin-bottom:48px; }
+      .compare-head h2 { margin:14px 0 18px; }
+      .bars { display:flex; flex-direction:column; gap:26px; max-width:960px; }
+      .bar-row { display:grid; grid-template-columns:220px 1fr 64px; gap:24px; align-items:center; }
+      .bar-fit { font-size:15px; font-weight:600; }
+      .bar-stack { display:flex; flex-direction:column; gap:10px; }
+      .bar-line { position:relative; display:flex; align-items:center; }
+      .bar { height:34px; border-radius:8px; }
+      .bar.lava { background:var(--grad); }
+      .bar.rival { background:#2c2a26; }
+      .bar-tag { position:absolute; left:14px; font-family:"Space Grotesk"; font-size:13px; font-weight:600; color:#1a0d05; }
+      .bar-tag.ghost { color:var(--dim); }
+      .bar-save { font-family:"Space Grotesk"; font-weight:700; color:#7ee081; font-size:22px; text-align:right; }
+      @media (max-width:720px){ .bar-row { grid-template-columns:1fr 56px; } .bar-stack { grid-column:1 / -1; } .bar-fit { grid-column:1; } .bar-save { grid-column:2; grid-row:1; } }
+
+      /* QUOTE */
+      .quote { display:grid; grid-template-columns:.85fr 1.15fr; gap:6vw; align-items:center; background:var(--panel2); border-block:1px solid var(--line); }
+      .quote-media img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:20px; }
+      .quote blockquote { font-family:"Space Grotesk"; font-weight:500; font-size:clamp(22px,2.9vw,34px); line-height:1.32; letter-spacing:-0.01em; }
+      .quote figcaption { margin-top:26px; font-size:14px; color:var(--dim); }
+      .quote figcaption strong { color:var(--cream); }
+      @media (max-width:880px){ .quote { grid-template-columns:1fr; gap:32px; } }
+
+      /* CONFIGURE */
+      .configure { display:grid; grid-template-columns:1fr 1fr; gap:5vw; align-items:center; }
+      .cfg-copy h2 { margin:14px 0 20px; }
+      .cfg-copy > p { font-size:17px; color:var(--muted); line-height:1.6; max-width:44ch; }
+      .cfg-points { list-style:none; margin:26px 0 0; display:flex; flex-direction:column; gap:14px; }
+      .cfg-points li { font-size:15px; color:var(--muted); padding-left:16px; border-left:3px solid; border-image:var(--grad) 1; }
+      @media (max-width:880px){ .configure { grid-template-columns:1fr; gap:40px; } }
+
+      /* FINAL CTA */
+      .final-cta { text-align:center; padding:16vh 6vw; background:radial-gradient(120% 100% at 50% 0%, rgba(228,59,27,.16), transparent 60%); border-top:1px solid var(--line); }
+      .final-cta h2 { font-size:clamp(38px,6vw,80px); margin-bottom:36px; }
+      .final-note { margin-top:24px; font-size:13px; color:var(--dim); letter-spacing:.04em; }
+
+      /* FOOT */
+      .foot { text-align:center; padding:8vh 6vw; border-top:1px solid var(--line); }
+      .foot img { height:22px; margin-bottom:16px; }
+      .foot p { color:var(--dim); font-size:12px; letter-spacing:.06em; }
+    </style>
+  </body>
+</html>
