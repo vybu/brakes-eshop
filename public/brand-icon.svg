@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" role="img" aria-label="LAVA">
+  <rect width="128" height="128" rx="28" fill="#100E0B"/>
+  <!-- LAVA thermal-bar mark: four gradient rows echoing the wordmark -->
+  <g>
+    <rect x="24" y="24" width="46" height="14" rx="7" fill="#E33D1B"/>
+    <rect x="76" y="24" width="28" height="14" rx="7" fill="#E33D1B"/>
+    <rect x="24" y="46" width="34" height="14" rx="7" fill="#E9682A"/>
+    <rect x="64" y="46" width="40" height="14" rx="7" fill="#E9682A"/>
+    <rect x="24" y="68" width="80" height="14" rx="7" fill="#F1A361"/>
+    <rect x="24" y="90" width="28" height="14" rx="7" fill="#FCEDCC"/>
+    <rect x="58" y="90" width="46" height="14" rx="7" fill="#FCEDCC"/>
+  </g>
+</svg>

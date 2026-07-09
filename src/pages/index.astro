@@ -118,7 +118,9 @@ const jsonLd = {
     <title>LAVA — Track focused, street priced competition brake pads</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.svg" />
+    <!-- Wix hosting reserves the /favicon.* path and serves a platform default,
+         so point the icon at a non-intercepted path to get the real LAVA mark. -->
+    <link rel="icon" type="image/svg+xml" href="/brand-icon.svg" />
     <!-- Open Graph / Twitter -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="LAVA" />
