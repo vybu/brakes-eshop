@@ -11,7 +11,7 @@ import type { LavaCatalog } from "../lib/lava-catalog";
 // local "Added" state. All styling scoped under .lava-studio-cfg. Mount client:load.
 
 // Reserved thermal gradient — the ONE signature element. Used only on the temp scale.
-const THERMAL = "linear-gradient(90deg,#E33D1B 0%,#E9682A 34%,#F1A361 66%,#FCEDCC 100%)";
+const THERMAL = "linear-gradient(90deg,#C1001F 0%,#E11437 34%,#F0806F 66%,#FBE7DD 100%)";
 
 // Discipline framing per compound — the ledger's second column.
 const USE: Record<CompoundCode, string> = {
